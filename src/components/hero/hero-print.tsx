@@ -5,12 +5,13 @@
 import { useEffect, useRef } from "react";
 import { FilmClip } from "@/components/ui/film-clip";
 import { Print } from "@/components/ui/print";
+import { CLIPS, clipLabel } from "@/data/media";
 import { cx } from "@/lib/cx";
 import { useTier } from "@/lib/tier";
 import { afterLoadIdle } from "@/lib/use-media";
 
-/** The print's caption, as the spec writes it (lead's media override: captions stay as written). */
-export const HERO_CAPTION = "Bay 2, 7:31 AM · demo footage, 3D render";
+/** The print's caption: the spec's place and time, then what the clip is (from data/media.ts). */
+export const HERO_CAPTION = `Bay 2, 7:31 AM · ${clipLabel(CLIPS.hero.source)}`;
 
 /*
  * Scroll parallax (desktop full tier): over the hero's own height the sheet travels at 0.92 of the
@@ -58,7 +59,7 @@ export function HeroPrint({ className }: { className?: string }) {
     };
   }, [tier]);
 
-  // On a narrow band the caption wraps after the "·", never inside "3D render".
+  // On a narrow band the caption wraps after the "·", never inside the label ("demo footage, AI-generated").
   const [when, what] = HERO_CAPTION.split(" · ");
   return (
     <div ref={ref} data-hero-print className={className}>

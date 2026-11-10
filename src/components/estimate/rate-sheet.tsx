@@ -15,7 +15,7 @@ import { ViewTransition, type CSSProperties } from "react";
 import { Print } from "@/components/ui/print";
 import { Sheet } from "@/components/ui/sheet";
 import { IMPRINTS } from "@/data/copy";
-import { PHOTOS } from "@/data/media";
+import { MEDIA_LABEL, PHOTOS } from "@/data/media";
 import {
   ESTIMATE_COPY,
   PRICE_LIST_COPY,
@@ -175,7 +175,7 @@ function FilterPhoto() {
           <img src={small.webp} alt={photo.alt} width={small.width} height={small.height} loading="lazy" decoding="async" />
         </picture>
       </summary>
-      <Print className="rs-photo-print" tilt={-0.8} clip={false}>
+      <Print className="rs-photo-print" tilt={-0.8} clip={false} caption={MEDIA_LABEL.image}>
         <picture>
           <source
             type="image/avif"

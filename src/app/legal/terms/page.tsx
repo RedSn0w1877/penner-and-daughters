@@ -45,11 +45,12 @@ export default function TermsPage() {
           ),
         },
         {
-          heading: "3D-rendered media.",
+          heading: "AI-generated and stock media.",
           body: (
             <p>
-              Photos and video on this site are 3D renders made in Blender for the sample and are labeled as demo footage.
-              They don&apos;t show a real shop or real people.
+              The photos and videos of the shop on this site are AI-generated for the sample and labeled that way. One clip,
+              a torque wrench on a wheel, is stock footage from Pexels (Pexels License) and is labeled as stock footage. The
+              parts diagrams are 3D renders. None of it shows a real {SHOP.shortName}, because there isn&apos;t one.
             </p>
           ),
         },

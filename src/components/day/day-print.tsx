@@ -18,7 +18,7 @@ import { FilmClip } from "@/components/ui/film-clip";
 import { Print } from "@/components/ui/print";
 import { Stamp } from "@/components/ui/stamp";
 import { DAY_STEPS, MEDIA_LABEL, NIGHT, printFor, type DayPrintMedia } from "@/data/day";
-import { CLIPS, PHOTOS, type ClipId, type Photo } from "@/data/media";
+import { CLIPS, PHOTOS, clipLabel, type ClipId, type Photo } from "@/data/media";
 import { cx } from "@/lib/cx";
 
 function PhotoPicture({ photo, sizes, className }: { photo: Photo; sizes: string; className?: string }) {
@@ -41,11 +41,12 @@ function PhotoPicture({ photo, sizes, className }: { photo: Photo; sizes: string
   );
 }
 
-/** The caption under a step's print: the time, then the demo-media label from data/day.ts. */
+/** The caption under a step's print: the time, then what the media is (AI-generated, or stock footage). */
 export function stepCaption(stepIndex: number): string {
   const step = DAY_STEPS[stepIndex];
   const media = printFor(stepIndex);
-  return `${step.time} · ${media?.kind === "photo" ? MEDIA_LABEL.image : MEDIA_LABEL.footage}`;
+  const label = media?.kind === "photo" ? MEDIA_LABEL.image : clipLabel(media ? CLIPS[media.clip].source : "ai");
+  return `${step.time} · ${label}`;
 }
 
 /* ---------------------------------------------------------------------------------------------

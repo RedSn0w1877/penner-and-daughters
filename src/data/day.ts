@@ -26,11 +26,12 @@ const toMinutes = (hhmm: string) => {
 };
 const DAY = 24 * 60;
 
-/** Media labels on every print and film in this section (the burned-in watermark is on the frames). */
-export const MEDIA_LABEL = {
-  footage: "demo footage, 3D render",
-  image: "demo image, 3D render",
-} as const;
+/**
+ * Media labels on every print and film in this section (the burned-in watermark is on the frames).
+ * They live in data/media.ts, next to the files they describe: "AI-generated" for the Flow stills
+ * and clips, "stock footage" for the Pexels torque clip.
+ */
+export { MEDIA_LABEL } from "./media";
 
 /* =============================================================================================
  * The night (phase 1) and the dawn

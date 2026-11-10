@@ -16,7 +16,7 @@ import { Play } from "lucide-react";
 import type { MouseEvent } from "react";
 import { PenTick } from "@/components/ui/pen-tick";
 import { THREAD, type ItemId, type ThreadMedia, type ThreadMessage } from "@/data/inspection";
-import { CLIPS, PHOTOS, clipRendition } from "@/data/media";
+import { CLIPS, MEDIA_LABEL, PHOTOS, clipRendition } from "@/data/media";
 import { cx } from "@/lib/cx";
 
 export interface PhoneThreadProps {
@@ -75,7 +75,9 @@ function MediaTile({ media, onOpen }: { media: ThreadMedia; onOpen?: PhoneThread
             </span>
           </span>
         </a>
-        <span className="mt-1.5 block font-mono text-[12px] text-graphite">{media.caption}</span>
+        <span className="mt-1.5 block font-mono text-[12px] text-graphite">
+          {media.caption} · <span className="whitespace-nowrap">{MEDIA_LABEL.ai}</span>
+        </span>
       </span>
     );
   }

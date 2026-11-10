@@ -16,7 +16,7 @@ import { lockScroll, unlockScroll } from "@/components/providers/smooth-scroll";
 import { FilmClip } from "@/components/ui/film-clip";
 import { LABELS } from "@/data/copy";
 import type { ThreadMedia } from "@/data/inspection";
-import { PHOTOS } from "@/data/media";
+import { MEDIA_LABEL, PHOTOS } from "@/data/media";
 
 interface LightboxState {
   media: ThreadMedia;
@@ -125,7 +125,7 @@ export function Lightbox() {
             </picture>
           )}
           <div className="flex items-center justify-between gap-4 py-2.5">
-            <p className="font-mono text-[12.5px] leading-snug text-imprint">{media.kind === "video" ? media.caption : null}</p>
+            <p className="font-mono text-[12.5px] leading-snug text-imprint">{media.kind === "video" ? `${media.caption} · ${MEDIA_LABEL.ai}` : MEDIA_LABEL.image}</p>
             <button ref={closeRef} type="button" onClick={closeLightbox} className="btn btn-ink" data-size="sm">
               <X aria-hidden="true" size={18} strokeWidth={2.4} />
               <span>{LABELS.close}</span>

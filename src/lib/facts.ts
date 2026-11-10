@@ -239,8 +239,8 @@ export const COPY = {
   /** The printed estimate's imprint. */
   printImprint: `Portfolio sample by ${STUDIO} · fictional business`,
   fictionLine: `${SHORT} is a fictional shop.`,
-  /** Footer disclosure. The media are Blender renders (lead's media override), so it says so. */
-  footerFiction: `${SHORT} is a fictional business. The address and phone numbers are made up for an ${STUDIO} portfolio sample. Photos and footage are 3D renders made for the sample.`,
+  /** Footer disclosure: says what each kind of media is (data/media.ts MEDIA_LABEL uses the same words). */
+  footerFiction: `${SHORT} is a fictional business. The address and phone numbers are made up for an ${STUDIO} portfolio sample. The photos and clips of the shop are AI-generated for the sample, one clip (a wrench on a wheel) is stock footage from Pexels, and the parts diagrams are 3D renders. None of it shows a real ${SHORT}, because there isn't one.`,
   copyright: COPYRIGHT_NOTICE,
 } as const;
 

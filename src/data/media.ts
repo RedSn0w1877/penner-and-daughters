@@ -5,14 +5,33 @@
  * under the /penner-and-daughters base path. The assets stream ships exactly these names; the
  * "-v1" suffix versions them, because GitHub Pages caches for 10 minutes.
  *
- * All stills and clips are Blender renders of one fictional shop (lead's media override),
- * each carrying a burned-in "HVNF Studios · portfolio sample" mark.
+ * Every still and clip of the shop is AI-generated (Google Flow: stills, and clips made with Omni
+ * 1.1 Flash) and carries a burned-in "HVNF Studios · portfolio sample" mark. One clip, the torque
+ * wrench, is stock footage from Pexels ("Mechanic turning wheel studs of car tire" by K, Pexels
+ * Licence); it is not HVNF's footage, so it carries no HVNF mark. The parts diagrams, frame
+ * sequences, GLB models and the small props are still 3D renders (Blender). Every caption and alt
+ * text says which of these a piece is, using MEDIA_LABEL below.
  */
 import { withBase } from "@/lib/base-path";
 
 /* =============================================================================================
  * Video
  * =========================================================================================== */
+
+/** Where a clip came from. Drives the caption: "AI-generated" vs "stock footage". */
+export type MediaSource = "ai" | "stock";
+
+/** The honest label printed under every photo and clip (lowercase, after the time or place). */
+export const MEDIA_LABEL = {
+  /** The short tag, for captions that already say "Video" or "Photo". */
+  ai: "AI-generated",
+  footage: "demo footage, AI-generated",
+  image: "demo image, AI-generated",
+  stock: "stock footage",
+} as const;
+
+/** The caption label for a clip, by where it came from. */
+export const clipLabel = (source: MediaSource) => (source === "stock" ? MEDIA_LABEL.stock : MEDIA_LABEL.footage);
 
 export type ClipId = "hero" | "night-drop" | "door-rise" | "lift-rise" | "pad-gauge" | "torque" | "road-test" | "pickup-box";
 
@@ -46,6 +65,8 @@ export interface Clip {
   loop: boolean;
   /** Seconds. Autoplaying clips over 5 s get a visible Pause control. */
   duration: number;
+  /** "ai" = made in Google Flow for this sample; "stock" = footage from Pexels. */
+  source: MediaSource;
   /** On the touch tier only these play (one at a time); the rest stay posters. */
   touchPlays: boolean;
   alt: string;
@@ -88,8 +109,9 @@ export const CLIPS: Record<ClipId, Clip> = {
     id: "hero",
     loop: true,
     duration: 8,
+    source: "ai",
     touchPlays: true,
-    alt: "A silver sedan up on the lift in a bright repair bay, the roll-up door open to the morning.",
+    alt: "AI-generated video: a silver sedan up on the lift in a repair bay, seen through the open roll-up door on a wet morning.",
     variants: {
       print: rendition("hero-4x5-v1", 864, 1080, { vp9First: true, hd: true }),
       band: rendition("hero-16x9-v1", 1280, 720, { poster: { name: "hero-16x9-v1", width: 828, height: 466 } }),
@@ -99,8 +121,9 @@ export const CLIPS: Record<ClipId, Clip> = {
     id: "night-drop",
     loop: true,
     duration: 8,
+    source: "ai",
     touchPlays: true,
-    alt: "The shop's side door at night in the rain: the blue office door, the steel key slot and the porch light.",
+    alt: "AI-generated video: the shop's side door at night in the rain, with the blue office door, the steel key slot and the porch light.",
     variants: {
       fullbleed: rendition("night-drop-v1", 1600, 900, { vp9: true, hd: true }),
       band: rendition("night-drop-720-v1", 1280, 720, { poster: { name: "night-drop-828-v1", width: 828, height: 466 } }),
@@ -110,8 +133,9 @@ export const CLIPS: Record<ClipId, Clip> = {
     id: "door-rise",
     loop: false,
     duration: 8,
+    source: "ai",
     touchPlays: true,
-    alt: "At dawn the white roll-up door rises on the bay, with the silver sedan waiting on the lift.",
+    alt: "AI-generated video: at dawn the white roll-up door rises on the bay, with the silver sedan waiting on the lift.",
     variants: {
       fullbleed: rendition("door-rise-v1", 1600, 900, { vp9: true, hd: true }),
       band: rendition("door-rise-720-v1", 1280, 720, { poster: { name: "door-rise-828-v1", width: 828, height: 466 } }),
@@ -121,40 +145,45 @@ export const CLIPS: Record<ClipId, Clip> = {
     id: "lift-rise",
     loop: false,
     duration: 8,
+    source: "ai",
     touchPlays: false,
-    alt: "The two-post lift raises the silver sedan to full height.",
+    alt: "AI-generated video: the two-post lift raises the silver sedan off the floor.",
     variants: { print: print540("lift-rise-v1") },
   },
   "pad-gauge": {
     id: "pad-gauge",
     loop: true,
     duration: 8,
+    source: "ai",
     touchPlays: true,
-    alt: "A brake-pad gauge slides along the edge of the worn inner pad.",
+    alt: "AI-generated video: a gloved hand slides a brake-pad gauge along the edge of a brake pad.",
     variants: { print: print540("pad-gauge-v1") },
   },
   torque: {
     id: "torque",
     loop: false,
     duration: 4,
+    source: "stock",
     touchPlays: false,
-    alt: "A torque wrench clicks on a lug nut, then moves across the wheel in a star pattern.",
+    alt: "Stock footage from Pexels: a hand sets a torque wrench on a wheel's lug nut, then moves it to the next nut.",
     variants: { print: print540("torque-v1") },
   },
   "road-test": {
     id: "road-test",
     loop: false,
     duration: 4,
+    source: "ai",
     touchPlays: false,
-    alt: "Tracking alongside the sedan's front wheel on a quiet street, leaf shadows sliding over the car.",
+    alt: "AI-generated video: tracking alongside the sedan's front wheel on a quiet street, with leaf shadows sliding over the car.",
     variants: { print: print540("road-test-v1") },
   },
   "pickup-box": {
     id: "pickup-box",
     loop: false,
     duration: 4,
+    source: "ai",
     touchPlays: false,
-    alt: "A steel pickup locker door swings shut and latches on the brick wall.",
+    alt: "AI-generated video: a steel pickup locker door swings shut and latches on the brick wall.",
     variants: { print: print540("pickup-box-v1") },
   },
 };
@@ -197,19 +226,19 @@ function photo(id: PhotoId, alt: string): Photo {
 }
 
 export const PHOTOS: Record<PhotoId, Photo> = {
-  pads: photo("pads", "The worn inner brake pad, 3 mm of material left, next to a new 10 mm pad on a steel workbench."),
-  bulge: photo("bulge", "A bulge in the sidewall of the left front tire."),
-  belt: photo("belt", "Small cracks across the ribs of the serpentine belt."),
-  battery: photo("battery", "The battery terminals, cleaned and coated."),
-  filters: photo("filters", "A dirty air filter next to a new one."),
-  parts: photo("parts", "New brake pads in their box next to a new tire, ready to go on."),
-  "waiting-room": photo("waiting-room", "The waiting room: a desk with outlets and a window into Bay 1."),
+  pads: photo("pads", "AI-generated image: a worn brake pad (3 mm of material left in this example) beside a new pad on a steel workbench."),
+  bulge: photo("bulge", "AI-generated image: a bulge in the sidewall of a tire on a steel wheel."),
+  belt: photo("belt", "AI-generated image: small cracks across the ribs of a serpentine belt."),
+  battery: photo("battery", "AI-generated image: a battery terminal clamp with its post cleaned to bare metal, beside the red terminal cover."),
+  filters: photo("filters", "AI-generated image: a dirty air filter next to a new one on a steel bench."),
+  parts: photo("parts", "AI-generated image: new brake pads in their box on a steel counter, next to a new tire."),
+  "waiting-room": photo("waiting-room", "AI-generated image: a waiting room with a desk, outlets and a window into the bay."),
 };
 
 export const STOREFRONT = {
   wide: { avif: img("storefront-16x9-v1.avif"), webp: img("storefront-16x9-v1.webp"), width: 1280, height: 720 },
   tall: { avif: img("storefront-4x5-v1.avif"), webp: img("storefront-4x5-v1.webp"), width: 864, height: 1080 },
-  alt: "The shop from Cooper Mill Road: red brick, two white roll-up doors and the blue office door.",
+  alt: "AI-generated image of the shop from Cooper Mill Road: red brick, two white roll-up doors and the blue office door.",
 } as const;
 
 /** The worn pad cut out on a transparent background (the inspection lift-out). */
