@@ -1,0 +1,1435 @@
+/* © 2026 HVNF Studios. All rights reserved. Portfolio sample — do not redistribute. */
+
+/*
+ * "What will it cost?" (#prices): the price list and its ruler, "Your estimate" (a sticky column on
+ * desktop, a drawer on phones), the carbon peel, and the printed estimate (black and white, one
+ * page, nothing else on it). Loaded with the section.
+ *
+ * Vehicle classes: the list's scope carries data-vehicle; every bar, drum and note reads its value
+ * for the active class from custom properties the server wrote (0 compact, 1 SUV or minivan,
+ * 2 pickup, 3 European).
+ */
+
+@layer components {
+  /* ---- Section ------------------------------------------------------------------------------ */
+
+  .prices {
+    padding-block: var(--section-pad);
+  }
+
+  .prices-head {
+    max-width: 50rem;
+    margin-bottom: clamp(28px, 4vw, 52px);
+  }
+
+  .prices-lead {
+    margin-top: 18px;
+    max-width: 44rem;
+    color: var(--graphite);
+  }
+
+  .prices-grid {
+    display: grid;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .prices-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 24px;
+    }
+
+    /* Both sit inside an island wrapper (display: contents), so they're still the grid's items. */
+    .prices-grid > [data-island] > .rs {
+      grid-column: 1 / span 7;
+    }
+
+    .prices-grid > [data-island] > .est-aside {
+      grid-column: 8 / span 5;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .prices-grid > [data-island] > .rs {
+      grid-column: 1 / span 8;
+    }
+
+    .prices-grid > [data-island] > .est-aside {
+      grid-column: 9 / span 4;
+    }
+  }
+
+  /* ---- Price list ----------------------------------------------------------------------------- */
+
+  .rs-body {
+    container-type: inline-size;
+  }
+
+  .rs-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* The diagnosis slip, pinned to the top of the sheet. */
+  .rs-diag {
+    position: relative;
+    max-width: 64ch;
+    margin: 6px 0 28px;
+    padding: 18px 20px 16px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius-sheet);
+    background: var(--paper-shade);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .rs-diag::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 26px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow:
+      inset 2px 2px 0 rgb(255 255 255 / 0.2),
+      0 3px 3px -1px rgb(18 20 23 / 0.35);
+  }
+
+  .rs-vehicle {
+    max-width: 100%;
+  }
+
+  .rs-vehicle .ptab {
+    padding: 0 14px;
+    font-size: 15px;
+  }
+
+  html:not(.js) .rs-vehicle {
+    display: none;
+  }
+
+  .rs-caption {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--graphite);
+  }
+
+  .rs-scope {
+    outline-offset: 8px;
+  }
+
+  /* Groups skip rendering until they're near the viewport. A little side padding keeps the focus
+     rings of edge buttons inside the paint containment that comes with that. */
+  .rs-group {
+    margin: clamp(30px, 5cqi, 46px) -6px 0;
+    padding-inline: 6px;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 480px;
+  }
+
+  .rs-group-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 18px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .rs-group-title {
+    --wdth: 74;
+    font-size: 23px;
+    font-weight: 820;
+    line-height: 1.1;
+  }
+
+  /* A 44px-tall tap target without moving the title row (the negative margin gives the height back). */
+  .rs-more {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -10px;
+    font-size: 15px;
+  }
+
+  /* Track grid shared by the scale and the rows: narrow sheets put the ruler on its own line. */
+  .rs-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "track track"
+      "time add";
+    align-items: center;
+    column-gap: 14px;
+  }
+
+  @container (min-width: 520px) {
+    .rs-grid {
+      grid-template-columns: 8.75rem minmax(0, 1fr) 5.75rem;
+      grid-template-areas: "time track add";
+      column-gap: 18px;
+    }
+  }
+
+  .rs-scale {
+    padding-top: 14px;
+  }
+
+  .rs-scale-track {
+    grid-area: track;
+    position: relative;
+    height: 30px;
+  }
+
+  .rs-scale-label {
+    position: absolute;
+    top: 0;
+    left: calc(var(--x) * 100%);
+    translate: -50% 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1;
+    color: var(--imprint);
+    white-space: nowrap;
+  }
+
+  .rs-scale-ticks {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 11px;
+    overflow: visible;
+    color: var(--steel);
+  }
+
+  .rs-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rs-row {
+    padding: 16px 0 18px;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  .rs-row:last-child {
+    padding-bottom: 6px;
+    border-bottom: 0;
+  }
+
+  .rs-row-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2px 16px;
+  }
+
+  .rs-name {
+    --wdth: 88;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .rs-fig {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rs-flat {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .rs-sentence {
+    max-width: 64ch;
+    margin-top: 6px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--graphite);
+  }
+
+  .rs-row-foot {
+    row-gap: 10px;
+    margin-top: 14px;
+  }
+
+  .rs-time {
+    grid-area: time;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--graphite);
+  }
+
+  .rs-time svg {
+    flex: none;
+    color: var(--steel);
+  }
+
+  .rs-add-cell {
+    grid-area: add;
+    justify-self: end;
+  }
+
+  /* ---- The track: hairline ruler, bar with end caps (transform only), or a pin ------------- */
+
+  .rs-track {
+    grid-area: track;
+    position: relative;
+    height: 24px;
+  }
+
+  .rs-track::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .rs-ticks {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 7px;
+    color: var(--rule);
+  }
+
+  .rs-bar,
+  .rs-cap {
+    --lo: var(--l0);
+    --hi: var(--h0);
+    transition: transform 350ms var(--ease-slip) calc(var(--r, 0) * 14ms);
+  }
+
+  .rs-scope[data-vehicle="suv"] :is(.rs-bar, .rs-cap) {
+    --lo: var(--l1);
+    --hi: var(--h1);
+  }
+
+  .rs-scope[data-vehicle="pickup"] :is(.rs-bar, .rs-cap) {
+    --lo: var(--l2);
+    --hi: var(--h2);
+  }
+
+  .rs-scope[data-vehicle="european"] :is(.rs-bar, .rs-cap) {
+    --lo: var(--l3);
+    --hi: var(--h3);
+  }
+
+  .rs-bar {
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 100%;
+    height: 8px;
+    border-radius: 1px;
+    background: var(--ink);
+    transform-origin: 0 50%;
+    transform: translateX(calc(var(--lo) * 100%)) scaleX(calc(var(--hi) - var(--lo)));
+  }
+
+  .rs-cap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .rs-cap[data-end="lo"] {
+    transform: translateX(calc(var(--lo) * 100%));
+  }
+
+  .rs-cap[data-end="hi"] {
+    transform: translateX(calc(var(--hi) * 100%));
+  }
+
+  .rs-cap::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: -0.75px;
+    width: 1.5px;
+    height: 18px;
+    background: var(--ink);
+  }
+
+  .rs-pin {
+    position: absolute;
+    top: 6px;
+    left: calc(var(--x) * 100%);
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    rotate: 45deg;
+    background: var(--ink);
+  }
+
+  /* In your estimate: the row's marks turn ballpoint blue. */
+  .rs-row:has(.rs-add[aria-pressed="true"]) :is(.rs-bar, .rs-pin) {
+    background: var(--blue);
+  }
+
+  .rs-row:has(.rs-add[aria-pressed="true"]) .rs-cap::before {
+    background: var(--blue);
+  }
+
+  /* ---- ROLL, in CSS: each drum is a column of digits in a ::before, 1.2em per digit.
+     Position 10 is "no digit": the drum folds to zero width. ---------------------------------- */
+
+  .rs-fig-vis {
+    display: inline-flex;
+    align-items: flex-start;
+  }
+
+  .rs-fig-vis > span {
+    display: inline-block;
+    height: 1.2em;
+    line-height: 1.2em;
+  }
+
+  .rs-dg,
+  .rs-cm {
+    --v: var(--v0);
+    --roll-delay: calc(var(--r, 0) * 14ms + var(--k, 0) * 40ms);
+    overflow: hidden;
+    width: calc(min(1, 10 - var(--v)) * 1ch);
+    transition: width 420ms var(--ease-roll) var(--roll-delay);
+  }
+
+  .rs-scope[data-vehicle="suv"] :is(.rs-dg, .rs-cm) {
+    --v: var(--v1);
+  }
+
+  .rs-scope[data-vehicle="pickup"] :is(.rs-dg, .rs-cm) {
+    --v: var(--v2);
+  }
+
+  .rs-scope[data-vehicle="european"] :is(.rs-dg, .rs-cm) {
+    --v: var(--v3);
+  }
+
+  .rs-dg::before {
+    content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9\A \A0";
+    display: block;
+    width: 1ch;
+    white-space: pre;
+    text-align: center;
+    line-height: 1.2em;
+    transform: translateY(calc(var(--v) * -1.2em));
+    transition: transform 420ms var(--ease-roll) var(--roll-delay);
+  }
+
+  /* Screen readers get the active class's range as text. */
+  .rs-fig-sr {
+    display: none;
+  }
+
+  .rs-scope[data-vehicle="compact"] .rs-fig-sr[data-cls="compact"],
+  .rs-scope[data-vehicle="suv"] .rs-fig-sr[data-cls="suv"],
+  .rs-scope[data-vehicle="pickup"] .rs-fig-sr[data-cls="pickup"],
+  .rs-scope[data-vehicle="european"] .rs-fig-sr[data-cls="european"] {
+    display: inline;
+  }
+
+  /* The big-bill dagger, on the rows whose high end reaches it for the class you picked; the note
+     itself is printed once, as the footnote at the sheet's foot. */
+  .rs-fig-wrap {
+    display: inline-flex;
+    align-items: baseline;
+  }
+
+  /* The dagger is set in the mono face: its latin subset covers U+2020, while Archivo's would
+     pull in the whole 84 KB latin-ext file for one glyph. */
+  .rs-dagger,
+  .rs-dagger-mark {
+    font-family: var(--font-mono);
+  }
+
+  .rs-dagger {
+    display: none;
+    margin-left: 3px;
+    font-size: 0.7em;
+    font-weight: 700;
+    color: var(--graphite);
+  }
+
+  .rs-scope[data-vehicle="compact"] .rs-dagger[data-on~="compact"],
+  .rs-scope[data-vehicle="suv"] .rs-dagger[data-on~="suv"],
+  .rs-scope[data-vehicle="pickup"] .rs-dagger[data-on~="pickup"],
+  .rs-scope[data-vehicle="european"] .rs-dagger[data-on~="european"] {
+    display: inline;
+  }
+
+  .rs-footnote {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--graphite);
+  }
+
+  /* "Show all … jobs (n)": a ruled row under a long group; the rest of the rows open below it. */
+  .rs-rest-summary {
+    display: flex;
+    min-height: 48px;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px dashed var(--rule);
+    font-size: 16px;
+    font-weight: 650;
+    color: var(--ink);
+  }
+
+  .rs-rest-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .rs-rest-summary:hover span:first-child {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+  }
+
+  .rs-rest-summary:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .rs-rest-plus {
+    width: 16px;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+    color: var(--graphite);
+    transition: transform 200ms;
+  }
+
+  .rs-rest[open] .rs-rest-plus {
+    transform: rotate(45deg);
+  }
+
+  .rs-rest[open] > .rs-rows {
+    border-top: 1px dashed var(--rule);
+  }
+
+  /* ---- Add -------------------------------------------------------------------------------------- */
+
+  .rs-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 5.75rem;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius-button);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    transition:
+      transform 180ms var(--ease-slip),
+      box-shadow 180ms var(--ease-slip),
+      background-color 160ms,
+      border-color 160ms,
+      color 160ms;
+  }
+
+  .rs-add:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .rs-add[aria-pressed="true"] {
+    border-color: var(--blue);
+    background: var(--blue-wash);
+    color: var(--blue);
+  }
+
+  .rs-add:not([aria-pressed="true"]) .rs-add-tick {
+    display: none;
+  }
+
+  html:not(.js) .rs-add {
+    display: none;
+  }
+
+  /* ---- P5: the filter photo, a print that opens on tap ----------------------------------------- */
+
+  .rs-photo {
+    margin-top: 12px;
+  }
+
+  .rs-photo > summary {
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .rs-photo > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .rs-photo-thumb {
+    padding: 5px 5px 13px;
+    background: #fff;
+    box-shadow: var(--shadow-paper);
+    rotate: -1.2deg;
+    transition:
+      transform 180ms var(--ease-slip),
+      box-shadow 180ms var(--ease-slip);
+  }
+
+  .rs-photo-thumb:hover,
+  .rs-photo[open] .rs-photo-thumb {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .rs-photo-thumb img {
+    display: block;
+    width: 112px;
+    height: auto;
+  }
+
+  .rs-photo-print {
+    max-width: 440px;
+    margin-top: 18px;
+  }
+
+  .rs-photo-print img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---- Footers ---------------------------------------------------------------------------------- */
+
+  .rs-foot {
+    display: grid;
+    gap: 22px 40px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1.5px solid var(--ink);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--graphite);
+  }
+
+  @container (min-width: 620px) {
+    .rs-foot {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .rs-foot-title {
+    --wdth: 88;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .rs-foot-list {
+    display: grid;
+    gap: 8px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rs-foot-list li {
+    position: relative;
+    padding-left: 18px;
+  }
+
+  .rs-foot-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.74em;
+    left: 2px;
+    width: 8px;
+    height: 1.5px;
+    background: var(--ink);
+  }
+
+  .rs-foot-notes {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+  }
+
+  /* ---- Your estimate ------------------------------------------------------------------------------ */
+
+  .est-aside {
+    position: relative;
+    min-width: 0;
+  }
+
+  html:not(.js) .est-aside {
+    display: none;
+  }
+
+  .est-handle {
+    display: none;
+  }
+
+  .est-panel {
+    min-width: 0;
+  }
+
+  .est-stack {
+    position: relative;
+    display: grid;
+  }
+
+  .est-layer {
+    grid-area: 1 / 1;
+    min-width: 0;
+  }
+
+  /* Both layers fill the cell, so the canary copy peeks evenly and never shows below the top. */
+  .est-layer > .sheet,
+  .est-layer .sheet-paper {
+    height: 100%;
+  }
+
+  .est-body {
+    container-type: inline-size;
+  }
+
+  .sheet-body.est-body {
+    padding: 20px 18px 18px;
+  }
+
+  .est-sheet .sheet-foot {
+    padding-inline: 18px;
+  }
+
+  @media (min-width: 1280px) {
+    .sheet-body.est-body {
+      padding: 24px 24px 20px;
+    }
+
+    .est-sheet .sheet-foot {
+      padding-inline: 24px;
+    }
+  }
+
+  /* Desktop: sticky beside the list; the lines scroll inside, the total stays put. */
+  @media (min-width: 1024px) {
+    .est-aside {
+      position: sticky;
+      top: 96px;
+    }
+
+    .est-sheet .sheet-paper {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100dvh - 124px);
+    }
+
+    .sheet-body.est-body {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .est-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-inline: -6px;
+      padding-inline: 6px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule) transparent;
+    }
+  }
+
+  /* Phones and tablets: a drawer on the tear-off bar. */
+  @media (max-width: 1023.98px) {
+    .est-aside {
+      position: fixed;
+      z-index: 45;
+      left: 8px;
+      right: 8px;
+      bottom: calc(var(--tearoff-h) + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      max-width: 720px;
+      height: min(80dvh, calc(100dvh - var(--tearoff-h) - env(safe-area-inset-bottom) - 64px));
+      margin-inline: auto;
+      /* Its box comes from left/right/height alone, so a line sliding in relays out the drawer, never
+         the page (no paint containment: the handle's shadow reaches above the box). */
+      contain: size layout style;
+      transform: translateY(calc(100% - 48px));
+      transition:
+        transform 340ms var(--ease-slip),
+        visibility 0s;
+    }
+
+    .est-aside[data-drawer="hidden"] {
+      visibility: hidden;
+      transform: translateY(calc(100% + 16px));
+      transition:
+        transform 280ms var(--ease-slip),
+        visibility 0s linear 280ms;
+    }
+
+    .est-aside[data-drawer="open"] {
+      transform: translateY(0);
+    }
+
+    .est-handle {
+      position: relative;
+      display: flex;
+      flex: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 48px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 10px 10px 0 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      text-align: left;
+      box-shadow:
+        0 -12px 26px -16px rgb(18 20 23 / 0.5),
+        inset 0 -1px 0 var(--rule);
+    }
+
+    .est-caret {
+      width: 9px;
+      height: 9px;
+      border-top: 2px solid currentColor;
+      border-left: 2px solid currentColor;
+      rotate: 45deg;
+      translate: 0 3px;
+      transition:
+        rotate 240ms var(--ease-slip),
+        translate 240ms var(--ease-slip);
+    }
+
+    .est-aside[data-drawer="open"] .est-caret {
+      rotate: 225deg;
+      translate: 0 -3px;
+    }
+
+    .est-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 14px 8px 18px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: var(--counter);
+      box-shadow: inset 0 1px 0 var(--rule);
+      visibility: hidden;
+      transition: visibility 0s linear 340ms;
+    }
+
+    .est-aside[data-drawer="open"] .est-panel {
+      visibility: visible;
+      transition: visibility 0s;
+    }
+
+    /* Room for the canary copy peeking out at 6px and 0.5°. */
+    .est-panel .est-stack {
+      margin: 0 10px 10px 0;
+    }
+  }
+
+  .est-head {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    padding-bottom: 12px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .est-title {
+    --wdth: 80;
+    font-size: 22px;
+    font-weight: 820;
+    line-height: 1.1;
+    outline-offset: 4px;
+  }
+
+  .est-draft {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: var(--imprint);
+  }
+
+  .est-copyline {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .est-empty {
+    padding: 18px 0 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--graphite);
+  }
+
+  .est-lines {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Height animates on insert/remove, so lines clip; the side padding keeps focus rings whole. */
+  .est-lines > li {
+    margin-inline: -6px;
+    padding-inline: 6px;
+    overflow: hidden;
+  }
+
+  .el {
+    padding: 14px 0 10px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .est-lines > li:first-child .el {
+    border-top: 0;
+  }
+
+  .el-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .el-name {
+    --wdth: 88;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .el-amount {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .el-math {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .el-math td {
+    padding: 3px 0;
+    vertical-align: top;
+    color: var(--graphite);
+  }
+
+  .el-math td + td {
+    padding-left: 14px;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .el-math .el-sum td {
+    padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .el-math .el-sum td + td {
+    font-size: 16px;
+  }
+
+  .el-typical {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .el-vehicle {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .el-grade {
+    margin-top: 12px;
+  }
+
+  .el-grade-opts {
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 2px;
+    border-radius: var(--radius-button);
+    background: var(--paper-shade);
+    box-shadow: inset 0 0 0 1px var(--rule);
+  }
+
+  .el-grade-opt {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 4px;
+    color: var(--graphite);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color 160ms,
+      color 160ms,
+      box-shadow 160ms;
+  }
+
+  .el-grade-opt:has(input:checked) {
+    background: var(--paper);
+    color: var(--blue);
+    box-shadow:
+      0 1px 2px rgb(18 20 23 / 0.16),
+      0 0 0 1.5px var(--blue);
+  }
+
+  .el-grade-opt:has(input:focus-visible) {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .el-grade-note {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .el-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px 12px;
+    margin-top: 6px;
+  }
+
+  .el-approve {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .el-approve[data-static] {
+    cursor: default;
+  }
+
+  .el-box {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--paper);
+  }
+
+  .est-copy .el-box {
+    background: transparent;
+  }
+
+  .el-approve:has(input:focus-visible) .el-box {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .el-remove,
+  .est-clear {
+    min-height: 44px;
+    padding: 0 2px;
+    border: 0;
+    background: none;
+    color: var(--graphite);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+
+  .el-remove:hover,
+  .est-clear:hover {
+    color: var(--ink);
+  }
+
+  .est-notes {
+    display: grid;
+    gap: 10px;
+    padding: 12px 0 6px;
+    border-top: 1px dashed var(--rule);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .est-bottom {
+    position: relative;
+    flex: none;
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .est-total {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px 12px;
+  }
+
+  .est-total-label {
+    max-width: 15ch;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--graphite);
+  }
+
+  .est-total-fig {
+    font-family: var(--font-mono);
+    font-size: clamp(28px, 12cqi, 44px);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .est-total-fig[data-range] {
+    font-size: clamp(22px, 8.5cqi, 34px);
+  }
+
+  /* In its own row under the total, so it never sits on a figure or a line item. */
+  .est-stamp {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    pointer-events: none;
+  }
+
+  .est-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 12px;
+    margin-top: 16px;
+  }
+
+  .est-book {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .est-print {
+    justify-self: start;
+    gap: 8px;
+    padding: 0 14px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  /* ---- The carbon peel ------------------------------------------------------------------------- */
+
+  .est-copy {
+    transform: translate(6px, 8px) rotate(0.5deg);
+    transition: transform 420ms var(--ease-slip);
+  }
+
+  .est-top {
+    position: relative;
+    z-index: 1;
+    transition:
+      transform 460ms var(--ease-slip),
+      opacity 220ms linear,
+      visibility 0s;
+  }
+
+  .est-stack[data-peel="peeled"] .est-top {
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(30%, -40%) rotate(8deg);
+    transition:
+      transform 700ms cubic-bezier(0.55, 0.06, 0.68, 0.19),
+      opacity 260ms linear 440ms,
+      visibility 0s linear 700ms;
+  }
+
+  .est-stack[data-peel="peeled"] .est-copy {
+    transform: none;
+    transition: transform 560ms var(--ease-slip) 380ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .est-top,
+    .est-stack[data-peel="peeled"] .est-top {
+      transform: none;
+    }
+
+    .est-top {
+      transition:
+        opacity 150ms linear,
+        visibility 0s;
+    }
+
+    .est-stack[data-peel="peeled"] .est-top {
+      transition:
+        opacity 150ms linear,
+        visibility 0s linear 150ms;
+    }
+
+    .est-copy,
+    .est-stack[data-peel="peeled"] .est-copy {
+      transition: none;
+    }
+  }
+
+  /* The printed estimate lives at the end of <body>; on screen it never shows. */
+  .est-print-root {
+    display: none;
+  }
+}
+
+/* =================================================================================================
+ * Print: when there's an estimate, it's the only thing on the page. Black and white, one page.
+ * ============================================================================================== */
+
+@page {
+  margin: 14mm 14mm 16mm;
+}
+
+@media print {
+  body:has(> .est-print-root) > :not(.est-print-root) {
+    display: none !important;
+  }
+
+  body > .est-print-root {
+    display: block !important;
+    max-width: 180mm;
+    color: #000;
+    font-family: var(--font-sans);
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  .est-print-root * {
+    color: #000 !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  .epr-letterhead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24pt;
+    padding-bottom: 8pt;
+    border-bottom: 1.5pt solid #000;
+  }
+
+  .epr-shop {
+    --wdth: 74;
+    font-size: 17pt;
+    font-weight: 860;
+    line-height: 1.05;
+  }
+
+  .epr-sub {
+    font-size: 10pt;
+    font-weight: 500;
+  }
+
+  .epr-nap {
+    font-family: var(--font-mono);
+    font-size: 9.5pt;
+    line-height: 1.35;
+    text-align: right;
+  }
+
+  .epr-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12pt;
+    margin: 14pt 0 4pt;
+  }
+
+  .epr-title h1 {
+    --wdth: 80;
+    font-size: 18pt;
+    font-weight: 820;
+  }
+
+  .epr-title p {
+    font-family: var(--font-mono);
+    font-size: 9pt;
+  }
+
+  .epr-line {
+    padding: 8pt 0;
+    border-bottom: 0.75pt dashed #000;
+    break-inside: avoid;
+  }
+
+  .epr-line-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12pt;
+  }
+
+  .epr-line h2 {
+    font-size: 12pt;
+    font-weight: 700;
+  }
+
+  .epr-math {
+    width: 100%;
+    margin-top: 4pt;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+  }
+
+  .epr-math td {
+    padding: 1pt 0;
+    vertical-align: top;
+  }
+
+  .epr-math td + td,
+  .epr-num {
+    padding-left: 12pt;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .epr-math .epr-sum td {
+    padding-top: 3pt;
+    border-top: 0.75pt solid #000;
+    font-weight: 700;
+  }
+
+  .epr-typical {
+    margin-top: 3pt;
+    font-size: 9.5pt;
+  }
+
+  .epr-approve {
+    display: flex;
+    align-items: center;
+    gap: 6pt;
+    margin-top: 5pt;
+    font-size: 9.5pt;
+    font-weight: 600;
+  }
+
+  .epr-box {
+    flex: none;
+    width: 11pt;
+    height: 11pt;
+  }
+
+  .epr-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12pt;
+    margin-top: 10pt;
+    padding-top: 6pt;
+    border-top: 1.5pt solid #000;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+
+  .epr-total .epr-num {
+    font-size: 16pt;
+  }
+
+  .epr-stamp {
+    --wdth: 72;
+    display: inline-block;
+    margin-top: 10pt;
+    padding: 3pt 8pt;
+    border: 1.5pt solid #000;
+    border-radius: 3pt;
+    font-size: 11pt;
+    font-weight: 860;
+    rotate: -2deg;
+  }
+
+  .epr-warranty {
+    margin-top: 14pt;
+    font-size: 10pt;
+  }
+
+  .epr-imprint {
+    margin-top: 6pt;
+    font-family: var(--font-mono);
+    font-size: 8.5pt;
+  }
+}

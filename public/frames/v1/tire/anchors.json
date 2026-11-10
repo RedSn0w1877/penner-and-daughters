@@ -1,0 +1,906 @@
+{
+ "version": 1,
+ "part": "tire-section",
+ "width": 960,
+ "height": 600,
+ "origin": "top-left, normalized 0..1",
+ "camera": {
+  "dir": [
+   0.579623,
+   0.319792,
+   0.749513
+  ],
+  "up": [
+   0,
+   1,
+   0
+  ],
+  "target": [
+   -0.168764,
+   0.175224,
+   -0.01036
+  ],
+  "orthoWidth": 0.80738,
+  "aspect": 1.6,
+  "note": "orthographic camera at target + dir, fitted to explode t = 0..1 (pre-render frames use exactly this)"
+ },
+ "ease": "frame i shows explode factor smootherstep(i / 23)",
+ "state": "as built",
+ "frames": [
+  {
+   "i": 0,
+   "t": 0.0,
+   "eased": 0.0,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.46243,
+     "y": 0.46629,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43861,
+     "y": 0.39353,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63492,
+     "y": 0.34017,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.5423,
+     "y": 0.76983,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 1,
+   "t": 0.0435,
+   "eased": 0.0008,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.46239,
+     "y": 0.46631,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43857,
+     "y": 0.39358,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63487,
+     "y": 0.34015,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.54235,
+     "y": 0.7698,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 2,
+   "t": 0.087,
+   "eased": 0.0057,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.46215,
+     "y": 0.46644,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43835,
+     "y": 0.39393,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63456,
+     "y": 0.34002,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.54265,
+     "y": 0.7696,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 3,
+   "t": 0.1304,
+   "eased": 0.0181,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.46155,
+     "y": 0.46677,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43778,
+     "y": 0.39479,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63378,
+     "y": 0.33972,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.5434,
+     "y": 0.7691,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 4,
+   "t": 0.1739,
+   "eased": 0.0398,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.4605,
+     "y": 0.46735,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43679,
+     "y": 0.39632,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63242,
+     "y": 0.33919,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.54472,
+     "y": 0.76823,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 5,
+   "t": 0.2174,
+   "eased": 0.0721,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.45894,
+     "y": 0.46823,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43533,
+     "y": 0.39862,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.63039,
+     "y": 0.33844,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.54668,
+     "y": 0.76693,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 6,
+   "t": 0.2609,
+   "eased": 0.1153,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.45687,
+     "y": 0.46944,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.43339,
+     "y": 0.40172,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.62768,
+     "y": 0.33746,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.54929,
+     "y": 0.7652,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 7,
+   "t": 0.3043,
+   "eased": 0.1689,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.45432,
+     "y": 0.471,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.431,
+     "y": 0.40562,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.62431,
+     "y": 0.33632,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.55254,
+     "y": 0.76305,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 8,
+   "t": 0.3478,
+   "eased": 0.2318,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.45134,
+     "y": 0.47291,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.42824,
+     "y": 0.41028,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.62037,
+     "y": 0.33507,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.55635,
+     "y": 0.76053,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 9,
+   "t": 0.3913,
+   "eased": 0.3025,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.44801,
+     "y": 0.47516,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.42519,
+     "y": 0.41562,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.61593,
+     "y": 0.33379,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.56064,
+     "y": 0.75769,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 10,
+   "t": 0.4348,
+   "eased": 0.3791,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.44444,
+     "y": 0.47771,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.42194,
+     "y": 0.42153,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.61114,
+     "y": 0.33255,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.56528,
+     "y": 0.75462,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 11,
+   "t": 0.4783,
+   "eased": 0.4593,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.44074,
+     "y": 0.48052,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.4186,
+     "y": 0.42784,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.60612,
+     "y": 0.3314,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.57014,
+     "y": 0.75141,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 12,
+   "t": 0.5217,
+   "eased": 0.5407,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.43702,
+     "y": 0.4835,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.41527,
+     "y": 0.43439,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.60104,
+     "y": 0.33041,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.57508,
+     "y": 0.74814,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 13,
+   "t": 0.5652,
+   "eased": 0.6209,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.43339,
+     "y": 0.48657,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.41207,
+     "y": 0.44097,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.59604,
+     "y": 0.3296,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.57994,
+     "y": 0.74493,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 14,
+   "t": 0.6087,
+   "eased": 0.6975,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.42997,
+     "y": 0.48963,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.40908,
+     "y": 0.44737,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.59127,
+     "y": 0.32898,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.58458,
+     "y": 0.74185,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 15,
+   "t": 0.6522,
+   "eased": 0.7682,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.42684,
+     "y": 0.49256,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.40637,
+     "y": 0.45339,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.58689,
+     "y": 0.32854,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.58887,
+     "y": 0.73902,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 16,
+   "t": 0.6957,
+   "eased": 0.8311,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.42408,
+     "y": 0.49525,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.40401,
+     "y": 0.45883,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.58299,
+     "y": 0.32825,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.59268,
+     "y": 0.73649,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 17,
+   "t": 0.7391,
+   "eased": 0.8847,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.42175,
+     "y": 0.4976,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.40203,
+     "y": 0.46352,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57968,
+     "y": 0.32809,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.59593,
+     "y": 0.73435,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 18,
+   "t": 0.7826,
+   "eased": 0.9279,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41989,
+     "y": 0.49954,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.40046,
+     "y": 0.46734,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57702,
+     "y": 0.32802,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.59855,
+     "y": 0.73262,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 19,
+   "t": 0.8261,
+   "eased": 0.9602,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41851,
+     "y": 0.50102,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.3993,
+     "y": 0.47022,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57503,
+     "y": 0.32799,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.6005,
+     "y": 0.73132,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 20,
+   "t": 0.8696,
+   "eased": 0.9819,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41758,
+     "y": 0.50202,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.39852,
+     "y": 0.47217,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57369,
+     "y": 0.32799,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.60182,
+     "y": 0.73045,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 21,
+   "t": 0.913,
+   "eased": 0.9943,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41706,
+     "y": 0.5026,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.39808,
+     "y": 0.47328,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57293,
+     "y": 0.32799,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.60257,
+     "y": 0.72995,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 22,
+   "t": 0.9565,
+   "eased": 0.9992,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41684,
+     "y": 0.50283,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.39791,
+     "y": 0.47373,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57263,
+     "y": 0.328,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.60287,
+     "y": 0.72975,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 23,
+   "t": 1.0,
+   "eased": 1.0,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Sidewall",
+     "x": 0.41681,
+     "y": 0.50286,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tread",
+     "x": 0.39788,
+     "y": 0.4738,
+     "occluded": true
+    },
+    {
+     "id": 3,
+     "label": "Steel belts",
+     "x": 0.57258,
+     "y": 0.328,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Wheel",
+     "x": 0.60292,
+     "y": 0.72972,
+     "occluded": false
+    }
+   ]
+  }
+ ],
+ "still": {
+  "width": 1200,
+  "height": 750,
+  "anchors": [
+   {
+    "id": 1,
+    "label": "Sidewall",
+    "x": 0.41681,
+    "y": 0.50286,
+    "occluded": false
+   },
+   {
+    "id": 2,
+    "label": "Tread",
+    "x": 0.39788,
+    "y": 0.4738,
+    "occluded": true
+   },
+   {
+    "id": 3,
+    "label": "Steel belts",
+    "x": 0.57258,
+    "y": 0.328,
+    "occluded": false
+   },
+   {
+    "id": 4,
+    "label": "Wheel",
+    "x": 0.60292,
+    "y": 0.72972,
+    "occluded": false
+   }
+  ]
+ },
+ "copyright": "© 2026 HVNF Studios. Portfolio sample — do not redistribute."
+}

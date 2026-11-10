@@ -1,0 +1,906 @@
+{
+ "version": 1,
+ "part": "belt-drive",
+ "width": 960,
+ "height": 600,
+ "origin": "top-left, normalized 0..1",
+ "camera": {
+  "dir": [
+   0.401731,
+   0.331428,
+   0.853679
+  ],
+  "up": [
+   0,
+   1,
+   0
+  ],
+  "target": [
+   -0.016597,
+   0.10864,
+   0.009206
+  ],
+  "orthoWidth": 0.73918,
+  "aspect": 1.6,
+  "note": "orthographic camera at target + dir, fitted to explode t = 0..1 (pre-render frames use exactly this)"
+ },
+ "ease": "frame i shows explode factor smootherstep(i / 23)",
+ "state": "as built",
+ "frames": [
+  {
+   "i": 0,
+   "t": 0.0,
+   "eased": 0.0,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.3722,
+     "y": 0.77293,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73211,
+     "y": 0.61843,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.347,
+     "y": 0.29042,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70508,
+     "y": 0.33156,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 1,
+   "t": 0.0435,
+   "eased": 0.0008,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.3722,
+     "y": 0.77293,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73211,
+     "y": 0.61842,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34699,
+     "y": 0.29044,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70507,
+     "y": 0.33158,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 2,
+   "t": 0.087,
+   "eased": 0.0057,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37221,
+     "y": 0.77292,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73215,
+     "y": 0.61834,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.3469,
+     "y": 0.29054,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70499,
+     "y": 0.33167,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 3,
+   "t": 0.1304,
+   "eased": 0.0181,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37223,
+     "y": 0.77289,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73223,
+     "y": 0.61814,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34669,
+     "y": 0.29078,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70477,
+     "y": 0.33191,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 4,
+   "t": 0.1739,
+   "eased": 0.0398,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37227,
+     "y": 0.77284,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73239,
+     "y": 0.61779,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34632,
+     "y": 0.2912,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.7044,
+     "y": 0.33234,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 5,
+   "t": 0.2174,
+   "eased": 0.0721,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37232,
+     "y": 0.77274,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73262,
+     "y": 0.61728,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34576,
+     "y": 0.29183,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70384,
+     "y": 0.33297,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 6,
+   "t": 0.2609,
+   "eased": 0.1153,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37239,
+     "y": 0.77257,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73293,
+     "y": 0.6166,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34501,
+     "y": 0.29267,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70309,
+     "y": 0.33381,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 7,
+   "t": 0.3043,
+   "eased": 0.1689,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37248,
+     "y": 0.77229,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73332,
+     "y": 0.61577,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34409,
+     "y": 0.29371,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70217,
+     "y": 0.33485,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 8,
+   "t": 0.3478,
+   "eased": 0.2318,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37258,
+     "y": 0.77189,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.7338,
+     "y": 0.61481,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.343,
+     "y": 0.29494,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.70108,
+     "y": 0.33607,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 9,
+   "t": 0.3913,
+   "eased": 0.3025,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37269,
+     "y": 0.77133,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73435,
+     "y": 0.61375,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34178,
+     "y": 0.29631,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69986,
+     "y": 0.33745,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 10,
+   "t": 0.4348,
+   "eased": 0.3791,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37281,
+     "y": 0.7706,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73497,
+     "y": 0.61264,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.34045,
+     "y": 0.29781,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69853,
+     "y": 0.33894,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 11,
+   "t": 0.4783,
+   "eased": 0.4593,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37293,
+     "y": 0.7697,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73563,
+     "y": 0.6115,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33907,
+     "y": 0.29937,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69715,
+     "y": 0.3405,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 12,
+   "t": 0.5217,
+   "eased": 0.5407,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37305,
+     "y": 0.76863,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73632,
+     "y": 0.61038,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33766,
+     "y": 0.30095,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69574,
+     "y": 0.34209,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 13,
+   "t": 0.5652,
+   "eased": 0.6209,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37316,
+     "y": 0.76745,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73703,
+     "y": 0.60931,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33627,
+     "y": 0.30251,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69435,
+     "y": 0.34365,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 14,
+   "t": 0.6087,
+   "eased": 0.6975,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37326,
+     "y": 0.76619,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73771,
+     "y": 0.60833,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33495,
+     "y": 0.30401,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69303,
+     "y": 0.34514,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 15,
+   "t": 0.6522,
+   "eased": 0.7682,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37334,
+     "y": 0.76491,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73836,
+     "y": 0.60744,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33373,
+     "y": 0.30538,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69181,
+     "y": 0.34652,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 16,
+   "t": 0.6957,
+   "eased": 0.8311,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37341,
+     "y": 0.76369,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73895,
+     "y": 0.60668,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33264,
+     "y": 0.30661,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.69072,
+     "y": 0.34775,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 17,
+   "t": 0.7391,
+   "eased": 0.8847,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37347,
+     "y": 0.76258,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73946,
+     "y": 0.60605,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33172,
+     "y": 0.30765,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.6898,
+     "y": 0.34879,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 18,
+   "t": 0.7826,
+   "eased": 0.9279,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37351,
+     "y": 0.76165,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.73988,
+     "y": 0.60555,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33097,
+     "y": 0.30849,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.68905,
+     "y": 0.34963,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 19,
+   "t": 0.8261,
+   "eased": 0.9602,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37354,
+     "y": 0.76092,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.7402,
+     "y": 0.60518,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33041,
+     "y": 0.30912,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.68849,
+     "y": 0.35026,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 20,
+   "t": 0.8696,
+   "eased": 0.9819,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37355,
+     "y": 0.76042,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.74041,
+     "y": 0.60494,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.33003,
+     "y": 0.30954,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.68812,
+     "y": 0.35068,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 21,
+   "t": 0.913,
+   "eased": 0.9943,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37357,
+     "y": 0.76014,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.74053,
+     "y": 0.60481,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.32982,
+     "y": 0.30978,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.6879,
+     "y": 0.35092,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 22,
+   "t": 0.9565,
+   "eased": 0.9992,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37357,
+     "y": 0.76002,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.74058,
+     "y": 0.60475,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.32974,
+     "y": 0.30988,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.68782,
+     "y": 0.35102,
+     "occluded": false
+    }
+   ]
+  },
+  {
+   "i": 23,
+   "t": 1.0,
+   "eased": 1.0,
+   "anchors": [
+    {
+     "id": 1,
+     "label": "Belt ribs",
+     "x": 0.37357,
+     "y": 0.76,
+     "occluded": false
+    },
+    {
+     "id": 2,
+     "label": "Tensioner",
+     "x": 0.74059,
+     "y": 0.60474,
+     "occluded": false
+    },
+    {
+     "id": 3,
+     "label": "Idler pulley",
+     "x": 0.32972,
+     "y": 0.3099,
+     "occluded": false
+    },
+    {
+     "id": 4,
+     "label": "Alternator pulley",
+     "x": 0.6878,
+     "y": 0.35103,
+     "occluded": false
+    }
+   ]
+  }
+ ],
+ "still": {
+  "width": 1200,
+  "height": 750,
+  "anchors": [
+   {
+    "id": 1,
+    "label": "Belt ribs",
+    "x": 0.37357,
+    "y": 0.76,
+    "occluded": false
+   },
+   {
+    "id": 2,
+    "label": "Tensioner",
+    "x": 0.74059,
+    "y": 0.60474,
+    "occluded": false
+   },
+   {
+    "id": 3,
+    "label": "Idler pulley",
+    "x": 0.32972,
+    "y": 0.3099,
+    "occluded": false
+   },
+   {
+    "id": 4,
+    "label": "Alternator pulley",
+    "x": 0.6878,
+    "y": 0.35103,
+    "occluded": false
+   }
+  ]
+ },
+ "copyright": "© 2026 HVNF Studios. Portfolio sample — do not redistribute."
+}

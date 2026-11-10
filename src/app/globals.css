@@ -1,0 +1,1263 @@
+/* © 2026 HVNF Studios. All rights reserved. Portfolio sample — do not redistribute. */
+
+@import "tailwindcss";
+
+/*
+ * Cascade layers: Tailwind declares theme, base, components, utilities. Everything below lives in
+ * base or components so a utility class (hidden, lg:flex, mt-6…) can always override it.
+ * (@property and @keyframes stay top-level.)
+ *
+ * Tokens are named by meaning. `static` emits every variable even when no utility uses it, so
+ * sections can also reach them as var(--color-paper) / var(--paper) in inline styles and SVG.
+ * One color rule: red, amber and green describe the car; ballpoint blue is you.
+ */
+@theme static {
+  /* Surfaces */
+  --color-counter: #e4e7ea;
+  --color-counter-deep: #d5d9dd;
+  --color-paper: #fcfbf7;
+  --color-paper-shade: #f3f1ea;
+  --color-canary: #fbf1b8;
+  --color-pink: #f7d6dc;
+
+  /* Ink */
+  --color-ink: #121417;
+  --color-graphite: #4b525a;
+  /* Fine print ONLY on paper or canary (imprint on the counter fails contrast). */
+  --color-imprint: #646b73;
+  --color-rule: #cdd1d6;
+  --color-steel: #7c858f;
+
+  /* You: Book, Approve, ticks, the chosen slot, focus rings, your text bubbles, the key tag */
+  --color-blue: #1b44a3;
+  --color-blue-wash: #e4ebf8;
+
+  /* The car: urgency and inspection results only, always with a word and a shape */
+  --color-stop: #c3261a;
+  --color-stop-wash: #fbe3df;
+  --color-soon-fill: #f4b43a;
+  --color-soon-text: #8f5300;
+  --color-soon-wash: #fdf1d8;
+  --color-ok: #1e7a3e;
+  --color-ok-wash: #e1f1e6;
+
+  /* Night: the day chapter and its dusk/dawn bands only */
+  --color-night: #0d1013;
+  --color-night-2: #171b1f;
+  --color-night-ink: #f3f2ec;
+  --color-night-dim: #a9b0b7;
+  --color-dawn: #2c3a4a;
+
+  /* Paper never blurs and never glows: just layered contact + drop shadows. */
+  --shadow-paper: 0 1px 1px rgb(18 20 23 / 0.08), 0 6px 14px -6px rgb(18 20 23 / 0.18), 0 30px 50px -28px rgb(18 20 23 / 0.3);
+  --shadow-lift: 0 2px 2px rgb(18 20 23 / 0.08), 0 10px 20px -8px rgb(18 20 23 / 0.2), 0 36px 60px -30px rgb(18 20 23 / 0.32);
+
+  --radius-sheet: 2px;
+  --radius-button: 6px;
+  --radius-stamp: 4px;
+  --radius-tag: 6px;
+  --radius-phone: 28px;
+
+  /* Breakpoints 640 / 768 / 1024 / 1280 / 1440 */
+  --breakpoint-2xl: 1440px;
+
+  /* Motion grammar */
+  --ease-slip: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-roll: cubic-bezier(0.3, 1.25, 0.5, 1);
+  --ease-ink: cubic-bezier(0.25, 0.8, 0.3, 1);
+}
+
+@theme inline {
+  /* next/font variables. (Never name the mono one --font-mono: it would shadow Tailwind's.) */
+  --font-sans: var(--font-archivo), Arial, sans-serif;
+  --font-mono: var(--font-atkinson-mono), ui-monospace, monospace;
+}
+
+/* Registered so they can transition / be scrubbed. */
+@property --slip {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --stamp-ink {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 170%;
+}
+
+@keyframes ink-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes stamp-press {
+  from {
+    transform: rotate(var(--stamp-rot, 0deg)) scale(1.06);
+  }
+  to {
+    transform: rotate(var(--stamp-rot, 0deg)) scale(1);
+  }
+}
+
+@keyframes stamp-ink {
+  from {
+    --stamp-ink: 14%;
+  }
+  to {
+    --stamp-ink: 170%;
+  }
+}
+
+/* =============================================================================================
+ * Base
+ * =========================================================================================== */
+
+@layer base {
+  :root {
+    /* The spec's token names, for raw CSS. */
+    --counter: var(--color-counter);
+    --counter-deep: var(--color-counter-deep);
+    --paper: var(--color-paper);
+    --paper-shade: var(--color-paper-shade);
+    --canary: var(--color-canary);
+    --pink: var(--color-pink);
+    --ink: var(--color-ink);
+    --graphite: var(--color-graphite);
+    --imprint: var(--color-imprint);
+    --rule: var(--color-rule);
+    --steel: var(--color-steel);
+    --blue: var(--color-blue);
+    --blue-wash: var(--color-blue-wash);
+    --stop: var(--color-stop);
+    --stop-wash: var(--color-stop-wash);
+    --soon-fill: var(--color-soon-fill);
+    --soon-text: var(--color-soon-text);
+    --soon-wash: var(--color-soon-wash);
+    --ok: var(--color-ok);
+    --ok-wash: var(--color-ok-wash);
+    --night: var(--color-night);
+    --night-2: var(--color-night-2);
+    --night-ink: var(--color-night-ink);
+    --night-dim: var(--color-night-dim);
+    --dawn: var(--color-dawn);
+
+    /* Layout */
+    --header-h: 56px;
+    --tearoff-h: 64px;
+    --notice-h: 24px;
+    --gutter: 16px;
+    --section-pad: clamp(72px, 10vw, 140px);
+
+    /* Z order: header 40 · tear-off bar 50 · menu 60 · toasts 70 · lightbox 80 */
+    --z-header: 40;
+    --z-tearoff: 50;
+    --z-menu: 60;
+    --z-toast: 70;
+    --z-lightbox: 80;
+
+    /* Archivo's width axis, set per element (see the universal rule below). */
+    --wdth: 100;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --header-h: 64px;
+      --tearoff-h: 0px;
+      --gutter: 40px;
+    }
+  }
+
+  /*
+   * font-variation-settings doesn't recompute per element when inherited, so every element
+   * re-reads the inheritable --wdth. Utilities set --wdth; children follow.
+   */
+  *,
+  ::before,
+  ::after {
+    font-variation-settings: "wdth" var(--wdth);
+  }
+
+  html {
+    color-scheme: light;
+    background-color: var(--counter);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Anchor jumps (and Lenis, which reads this) land below the sticky header. */
+    scroll-padding-top: calc(var(--header-h) + 8px);
+  }
+
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    position: relative;
+    min-height: 100dvh;
+    overflow-x: clip;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.55;
+    background-color: var(--counter);
+    /* The steel counter: a 2% horizontal brushed grain. Lines, never dots. */
+    background-image:
+      repeating-linear-gradient(180deg, rgb(18 20 23 / 0.02) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(180deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 7px),
+      linear-gradient(90deg, rgb(18 20 23 / 0.018), transparent 30%, rgb(255 255 255 / 0.04) 62%, rgb(18 20 23 / 0.015));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    /* Room for the fixed tear-off bar on phones and tablets. */
+    padding-bottom: calc(var(--tearoff-h) + env(safe-area-inset-bottom));
+  }
+
+  @media (min-width: 1024px) {
+    body {
+      padding-bottom: 0;
+    }
+  }
+
+  ::selection {
+    background: var(--blue-wash);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  /* Lenis (full tier only). */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent],
+  .lenis [data-lenis-prevent-wheel],
+  .lenis [data-lenis-prevent-touch] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  /* These skip rendering until they're near the viewport. */
+  #warranty,
+  #find-us {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1100px;
+  }
+
+  /* The symptom guide sheet and each price-list group skip style and layout until they're near the
+     viewport (at load, and when the vehicle tab restyles every row). The "auto" sizes remember the
+     real height once rendered; lib/gsap re-measures the pins when the page height settles. Never on
+     a pinned section (#inspection, #your-day): containment would trap the pin's position: fixed. */
+  #whats-wrong {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 2400px;
+  }
+
+  @media (max-width: 1023.98px) {
+    #whats-wrong {
+      contain-intrinsic-size: auto 3200px;
+    }
+  }
+
+  .site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 560px;
+  }
+
+  /*
+   * Reduced motion: final states, nothing moves. In the base layer because !important rules in
+   * earlier layers win. Elements that keep a short cross-fade on purpose opt out with
+   * data-motion-ok.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto !important;
+    }
+
+    *:not([data-motion-ok]),
+    *:not([data-motion-ok])::before,
+    *:not([data-motion-ok])::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
+
+    html.js .pen-tick path,
+    html.js .pencil-loop[data-draw="true"] {
+      stroke-dashoffset: 0 !important;
+    }
+
+    .sheet[data-slip-state] {
+      transform: none !important;
+    }
+  }
+
+  /* Print base: chrome off, paper flat. (The estimate stream's print sheet narrows it further.) */
+  @media print {
+    .notice-line,
+    .site-header,
+    .tearoff,
+    .menu-sheet,
+    .skip-links,
+    .film-toggle,
+    [data-sonner-toaster],
+    video {
+      display: none !important;
+    }
+
+    html,
+    body {
+      background: #fff !important;
+    }
+
+    body {
+      padding: 0 !important;
+    }
+
+    .sheet-paper,
+    .print {
+      box-shadow: none !important;
+    }
+
+    .sheet[data-slip-state] {
+      transform: none !important;
+    }
+  }
+}
+
+/* =============================================================================================
+ * Type scale (phone → desktop). Stamps and the letterhead are the only all-caps text.
+ * No letter-spaced caps, no italic accents, no two-tone headlines.
+ * =========================================================================================== */
+
+@utility type-h1 {
+  --wdth: 64;
+  font-size: clamp(3.6rem, 7.5vw, 6.75rem);
+  font-weight: 830;
+  line-height: 0.88;
+  letter-spacing: -0.012em;
+}
+
+@utility type-h2 {
+  --wdth: 66;
+  font-size: clamp(2.375rem, 5vw, 4.75rem);
+  font-weight: 820;
+  line-height: 0.92;
+}
+
+@utility type-h3 {
+  --wdth: 88;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@utility type-lead {
+  --wdth: 100;
+  font-size: clamp(1.09rem, 1.45vw, 1.3125rem);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+@utility type-body {
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+@utility type-label {
+  --wdth: 96;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--graphite);
+}
+
+@utility type-button {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@utility type-stamp {
+  --wdth: 72;
+  font-weight: 860;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+@utility mono-price {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility mono-total {
+  font-family: var(--font-mono);
+  font-size: clamp(30px, 3.4vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility mono-measure {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+@utility mono-imprint {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* 12 columns, max 1400px, 40px margins on desktop, 8px of counter around sheets on phones. */
+@utility counter-wrap {
+  width: 100%;
+  max-width: calc(1400px + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: 8px;
+  @media (min-width: 640px) {
+    padding-inline: 16px;
+  }
+  @media (min-width: 1024px) {
+    padding-inline: var(--gutter);
+  }
+}
+
+@utility section-pad {
+  padding-block: var(--section-pad);
+}
+
+/* =============================================================================================
+ * Components
+ * =========================================================================================== */
+
+@layer components {
+  /* ---- Paper: sheets, carbon copies, the perforated foot, the pantograph ------------------- */
+
+  .sheet {
+    position: relative;
+    /* What shows through the foot's punched notches; override on night backgrounds. */
+    --sheet-under: var(--counter);
+  }
+
+  .sheet-paper {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: var(--radius-sheet);
+    background: var(--paper);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .sheet[data-tone="canary"] .sheet-paper {
+    background: var(--canary);
+  }
+
+  .sheet-body {
+    position: relative;
+    padding: 20px 18px;
+  }
+
+  @media (min-width: 640px) {
+    .sheet-body {
+      padding: clamp(24px, 3.4vw, 48px);
+    }
+  }
+
+  .sheet-carbon {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-sheet);
+    box-shadow:
+      0 1px 1px rgb(18 20 23 / 0.06),
+      0 6px 12px -8px rgb(18 20 23 / 0.2);
+    pointer-events: none;
+  }
+
+  .sheet-carbon[data-copy="pink"] {
+    background: var(--pink);
+    transform: translate(6px, 8px) rotate(0.5deg);
+  }
+
+  .sheet-carbon[data-copy="canary"] {
+    background: var(--canary);
+    transform: translate(12px, 14px) rotate(0.9deg);
+  }
+
+  .sheet[data-carbon="canary"] .sheet-carbon[data-copy="canary"] {
+    transform: translate(6px, 8px) rotate(0.5deg);
+  }
+
+  /* The perforated foot: a dashed tear line with a punched notch at each edge, then the imprint. */
+  .sheet-foot {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 12px 18px 14px;
+    color: var(--imprint);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 640px) {
+    .sheet-foot {
+      padding-inline: clamp(24px, 3.4vw, 48px);
+      font-size: 12.5px;
+    }
+  }
+
+  .sheet-foot::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 14px;
+    right: 14px;
+    height: 1.5px;
+    background: repeating-linear-gradient(90deg, var(--rule) 0 7px, transparent 7px 12px);
+  }
+
+  .sheet-foot::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    height: 11px;
+    background:
+      radial-gradient(circle at 5.5px 5.5px, var(--sheet-under) 5px, transparent 5.5px) left / 11px 11px no-repeat,
+      radial-gradient(circle at 5.5px 5.5px, var(--sheet-under) 5px, transparent 5.5px) right / 11px 11px no-repeat;
+    pointer-events: none;
+  }
+
+  /*
+   * Pantograph: "SAMPLE · HVNF STUDIOS" at 3% ink, -18°, like the void pattern on a check.
+   * The tile is upright; the oversized layer rotates, so there are no seams.
+   */
+  .pantograph {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .pantograph::before {
+    content: "";
+    position: absolute;
+    inset: -60%;
+    transform: rotate(-18deg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='92'%3E%3Cg fill='%23121417' fill-opacity='0.03' font-family='Arial,Helvetica,sans-serif' font-size='12' font-weight='700'%3E%3Ctext x='6' y='30'%3ESAMPLE %C2%B7 HVNF STUDIOS%3C/text%3E%3Ctext x='156' y='76'%3ESAMPLE %C2%B7 HVNF STUDIOS%3C/text%3E%3C/g%3E%3C/svg%3E");
+    background-size: 300px 92px;
+  }
+
+  /* ---- SLIP: --slip runs 1 → 0 (24px lower, −0.6°, shadow y 28px → 6px) ------------------- */
+
+  .sheet[data-slip-state] {
+    transform: translateY(calc(var(--slip) * 24px)) rotate(calc(var(--slip) * -0.6deg));
+  }
+
+  .sheet[data-slip-state] .sheet-paper {
+    box-shadow:
+      0 1px 1px rgb(18 20 23 / 0.08),
+      0 calc(6px + var(--slip) * 22px) calc(14px + var(--slip) * 12px) -6px rgb(18 20 23 / 0.18),
+      0 30px 50px -28px rgb(18 20 23 / 0.3);
+  }
+
+  .sheet[data-slip-state="armed"] {
+    --slip: 1;
+  }
+
+  /* Touch tier: IntersectionObserver flips armed → in. (The full tier scrubs --slip with GSAP.) */
+  .sheet[data-slip-state="in"] {
+    --slip: 0;
+    transition: --slip 520ms var(--ease-slip);
+  }
+
+  /* ---- Photo prints ------------------------------------------------------------------------ */
+
+  .print {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 12px 12px 0;
+    background: #fff;
+    box-shadow: var(--shadow-paper);
+    transform: rotate(var(--tilt, 0deg));
+  }
+
+  .print-frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--counter-deep);
+  }
+
+  .print-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 2px 11px;
+    color: var(--imprint);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  .print-clip {
+    position: absolute;
+    z-index: 2;
+    top: -30px;
+    left: 50%;
+    width: 72px;
+    height: auto;
+    translate: -50% 0;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 2px rgb(18 20 23 / 0.25));
+  }
+
+  /* ---- Buttons and links ------------------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: var(--radius-button);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      transform 180ms var(--ease-slip),
+      box-shadow 180ms var(--ease-slip),
+      background-color 180ms;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn[data-size="md"] {
+    min-height: 48px;
+  }
+
+  .btn[data-size="lg"] {
+    min-height: 56px;
+    padding: 0 24px;
+  }
+
+  .btn-ink {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-blue {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .btn-blue:focus-visible {
+    outline-color: var(--ink);
+  }
+
+  .btn-paper {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .btn .btn-num {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .btn svg {
+    flex: none;
+  }
+
+  .text-link {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: color 160ms;
+  }
+
+  .text-link:hover {
+    color: var(--blue);
+  }
+
+  /* ---- Rubber stamps: shape + word + color (never color alone) ----------------------------- */
+
+  .stamp {
+    --wdth: 72;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42em;
+    padding: 0.42em 0.62em 0.38em;
+    border: 2px solid currentColor;
+    border-radius: var(--radius-stamp);
+    font-size: var(--stamp-size, 15px);
+    font-weight: 860;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transform: rotate(var(--stamp-rot, 0deg));
+  }
+
+  .stamp[data-tone="stop"] {
+    color: var(--stop);
+    background: var(--stop-wash);
+  }
+
+  .stamp[data-tone="soon"] {
+    color: var(--soon-text);
+    background: var(--soon-wash);
+  }
+
+  .stamp[data-tone="ok"] {
+    color: var(--ok);
+    background: var(--ok-wash);
+  }
+
+  .stamp[data-tone="you"] {
+    color: var(--blue);
+    background: var(--blue-wash);
+  }
+
+  .stamp-shape {
+    width: 1.05em;
+    height: 1.05em;
+    flex: none;
+  }
+
+  /* STAMP: press (scale 1.06 → 1, 70 ms ease-in), then the ink spreads (180 ms ease-out). */
+  .stamp[data-animate="true"] {
+    animation:
+      stamp-press 70ms ease-in both,
+      stamp-ink 180ms ease-out 70ms both;
+    -webkit-mask-image: radial-gradient(circle at 42% 55%, #000 var(--stamp-ink), transparent calc(var(--stamp-ink) + 16%));
+    mask-image: radial-gradient(circle at 42% 55%, #000 var(--stamp-ink), transparent calc(var(--stamp-ink) + 16%));
+  }
+
+  /* ---- INK: pen strokes write themselves in. Server HTML shows them drawn (no-JS); with JS
+     (html.js, set before first paint) they start unwritten. ----------------------------------- */
+
+  .pen-tick {
+    display: inline-block;
+    flex: none;
+    overflow: visible;
+  }
+
+  .pen-tick path {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  html.js .pen-tick path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  html.js .pen-tick[data-active="true"] path {
+    animation: ink-draw 270ms var(--ease-ink) var(--tick-delay, 0ms) forwards;
+  }
+
+  /* ---- ROLL: odometer drums ---------------------------------------------------------------- */
+
+  .odo {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .odo-drum {
+    position: relative;
+    display: inline-block;
+    height: var(--odo-h, 1.12em);
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  .odo-strip {
+    display: flex;
+    flex-direction: column;
+    transition: transform 420ms var(--ease-roll);
+    transition-delay: var(--odo-delay, 0ms);
+  }
+
+  .odo-strip > span,
+  .odo-static {
+    display: block;
+    height: var(--odo-h, 1.12em);
+    line-height: var(--odo-h, 1.12em);
+    text-align: center;
+  }
+
+  .odo-static {
+    display: inline-block;
+  }
+
+  /* ---- Paper tabs (Tabs sliding pill, as a paper index tab) -------------------------------- */
+
+  .ptabs {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .ptabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ptab {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--graphite);
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color 200ms;
+  }
+
+  .ptab[aria-selected="true"] {
+    color: var(--ink);
+  }
+
+  .ptabs-pill {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--pill-w, 0px);
+    transform: translateX(var(--pill-x, 0px));
+    transition:
+      transform 260ms var(--ease-slip),
+      width 260ms var(--ease-slip);
+    pointer-events: none;
+  }
+
+  .ptabs[data-snap="true"] .ptabs-pill {
+    transition: none;
+  }
+
+  /* index: tabs on a sheet's top edge; inactive ones are shade paper, the active one is the sheet. */
+  .ptabs[data-variant="index"] {
+    align-items: flex-end;
+    padding: 0 4px;
+  }
+
+  .ptabs[data-variant="index"] .ptab {
+    min-height: 46px;
+    border-radius: 6px 6px 0 0;
+    background: var(--paper-shade);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
+  }
+
+  .ptabs[data-variant="index"] .ptab[aria-selected="true"] {
+    background: transparent;
+  }
+
+  .ptabs[data-variant="index"]:not([data-ready]) .ptab[aria-selected="true"] {
+    background: var(--paper);
+  }
+
+  .ptabs[data-variant="index"] .ptabs-pill {
+    top: -4px;
+    border-radius: 6px 6px 0 0;
+    background: var(--paper);
+    box-shadow: 0 -2px 6px -3px rgb(18 20 23 / 0.2);
+  }
+
+  /* pill: a segmented control on paper-shade. */
+  .ptabs[data-variant="pill"] {
+    padding: 4px;
+    border-radius: var(--radius-button);
+    background: var(--paper-shade);
+  }
+
+  .ptabs[data-variant="pill"] .ptabs-pill {
+    top: 4px;
+    bottom: 4px;
+    border-radius: 5px;
+    background: var(--paper);
+    box-shadow:
+      0 1px 2px rgb(18 20 23 / 0.16),
+      0 0 0 1px var(--rule);
+  }
+
+  /* ---- Film clips (video prints and the night film) ---------------------------------------- */
+
+  .film {
+    position: relative;
+    overflow: hidden;
+    background: var(--counter-deep);
+    aspect-ratio: var(--film-ar, 16 / 9);
+  }
+
+  @media (min-width: 1024px) {
+    .film[data-responsive="true"] {
+      aspect-ratio: var(--film-ar-desk, 4 / 5);
+    }
+  }
+
+  .film > picture,
+  .film > picture > img,
+  .film > video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .film > video {
+    opacity: 0;
+    transition: opacity 500ms ease;
+  }
+
+  .film > video[data-ready="true"] {
+    opacity: 1;
+  }
+
+  .film-toggle {
+    position: absolute;
+    z-index: 2;
+    right: 10px;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: var(--radius-button);
+    background: rgb(18 20 23 / 0.82);
+    color: var(--paper);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* ---- Line-art car with a pencil loop around a zone ---------------------------------------- */
+
+  .line-car {
+    position: relative;
+  }
+
+  .line-car > img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .line-car > svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .pencil-loop {
+    fill: none;
+    stroke: var(--graphite);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  html.js .pencil-loop[data-draw="true"] {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 420ms var(--ease-ink) forwards;
+  }
+
+  /* ---- Notice line, header, status ---------------------------------------------------------- */
+
+  .notice-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--notice-h);
+    margin: 0;
+    padding: 3px 16px;
+    background: var(--paper-shade);
+    color: var(--graphite);
+    font-size: 13px;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    height: var(--header-h);
+    transition:
+      background-color 220ms,
+      box-shadow 220ms;
+  }
+
+  .site-header[data-scrolled="true"],
+  html:not(.js) .site-header {
+    background: var(--paper);
+    box-shadow: inset 0 -1.5px 0 var(--ink);
+  }
+
+  /* Without JS the header can't learn it has scrolled, so it is always the paper strip (above), and
+     the Menu toggle (a React control) gives way to a plain link to the footer's links. */
+  html.js .menu-trigger-nojs,
+  html:not(.js) .menu-trigger-js {
+    display: none !important;
+  }
+
+  /* Reserved width so the chip never pushes the header around when its text arrives. */
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 13.5em;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--graphite);
+    white-space: nowrap;
+  }
+
+  .status-dot {
+    width: 9px;
+    height: 9px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--steel);
+  }
+
+  .status-dot:not([data-known]) {
+    visibility: hidden;
+  }
+
+  .status-dot[data-open="true"] {
+    background: var(--ok);
+  }
+
+  /* Text state swap: exit up and out, enter from below. */
+  .swap {
+    display: inline-block;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .swap[data-phase="exit"] {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  .swap[data-phase="enter"] {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: none;
+  }
+
+  /* ---- Menu (Plus-to-menu morph from the 44px button) --------------------------------------- */
+
+  .menu-plus {
+    transition: transform 260ms var(--ease-slip);
+  }
+
+  .menu-plus[data-open="true"] {
+    transform: rotate(45deg);
+  }
+
+  .menu-sheet {
+    position: fixed;
+    z-index: var(--z-menu);
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 6px 16px 28px;
+    background: var(--paper);
+    box-shadow: var(--shadow-paper);
+    clip-path: circle(22px at calc(100% - 48px) 52px);
+    visibility: hidden;
+    transition:
+      clip-path 320ms var(--ease-slip),
+      visibility 0s linear 320ms;
+  }
+
+  .menu-sheet[data-open="true"] {
+    clip-path: circle(160vmax at calc(100% - 48px) 52px);
+    visibility: visible;
+    transition:
+      clip-path 380ms var(--ease-slip),
+      visibility 0s;
+  }
+
+  .menu-sheet > * {
+    opacity: 0;
+    transition: opacity 140ms;
+  }
+
+  .menu-sheet[data-open="true"] > * {
+    opacity: 1;
+    transition: opacity 220ms 110ms;
+  }
+
+  /* ---- Tear-off bar --------------------------------------------------------------------------- */
+
+  .tearoff {
+    position: fixed;
+    z-index: var(--z-tearoff);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    height: calc(64px + env(safe-area-inset-bottom));
+    padding: 0 0 env(safe-area-inset-bottom);
+    background: var(--paper);
+    box-shadow: 0 -8px 18px -12px rgb(18 20 23 / 0.35);
+    transition: transform 220ms var(--ease-slip);
+  }
+
+  /* The perforation along the top. */
+  .tearoff::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: repeating-linear-gradient(90deg, var(--steel) 0 7px, transparent 7px 12px);
+  }
+
+  .tearoff[data-hidden="true"] {
+    transform: translateY(110%);
+  }
+
+  .tearoff-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 8px 6px;
+  }
+
+  .tearoff-cell + .tearoff-cell::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    left: 0;
+    width: 1.5px;
+    background: repeating-linear-gradient(180deg, var(--rule) 0 5px, transparent 5px 9px);
+  }
+
+  .tearoff-cell > .btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 8px;
+    font-size: 16px;
+  }
+
+  /* Narrow phones: icon over label, so three buttons fit at 360px. */
+  @media (max-width: 420px) {
+    .tearoff-cell > .btn {
+      flex-direction: column;
+      gap: 3px;
+      font-size: 14px;
+    }
+
+    .tearoff-cell > .btn svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .tearoff {
+      display: none;
+    }
+  }
+
+  /* ---- Footer and toasts -------------------------------------------------------------------- */
+
+  .site-footer {
+    background: var(--counter-deep);
+    color: var(--graphite);
+  }
+
+  /* sonner, restyled as paper slips (no blur, no glass). */
+  [data-sonner-toaster] {
+    z-index: var(--z-toast) !important;
+  }
+
+  .paper-slip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(420px, calc(100vw - 32px));
+    padding: 14px 16px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sheet);
+    background: var(--paper);
+    box-shadow: var(--shadow-paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.4;
+  }
+}

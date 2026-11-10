@@ -1,0 +1,974 @@
+/* © 2026 HVNF Studios. All rights reserved. Portfolio sample — do not redistribute. */
+
+/*
+ * "Book a time." (#book and /book/): the appointment book. A left rail of four steps with blue
+ * ticks, the active step on the right (Page side-by-side between steps, through the View
+ * Transitions API), fill-in-the-blank fields, a ruled page of half-hour slots with taken ones
+ * struck through in pencil, the lug-nut loader and the canary confirmation slip.
+ */
+
+@layer components {
+  .bk {
+    padding-block: var(--section-pad);
+  }
+
+  .bk[data-variant="page"] {
+    padding-block: clamp(28px, 5vw, 56px) clamp(72px, 9vw, 120px);
+  }
+
+  .bk-head {
+    max-width: 50rem;
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .bk-lead {
+    max-width: 44rem;
+    margin-top: 18px;
+    color: var(--graphite);
+  }
+
+  @media (min-width: 1024px) {
+    .bk-sheet {
+      max-width: 1160px;
+    }
+  }
+
+  .bk-body {
+    container-type: inline-size;
+  }
+
+  /* JavaScript off (or the flow couldn't load): call or text to book. */
+  .bk-nojs {
+    max-width: 52ch;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  html.js .bk-nojs:not([data-show]) {
+    display: none;
+  }
+
+  html:not(.js) .bk-flow,
+  html:not(.js) .bk-placeholder {
+    display: none;
+  }
+
+  /* While the flow loads: an empty ruled page, the same height. */
+  .bk-placeholder {
+    min-height: 560px;
+    background: repeating-linear-gradient(180deg, transparent 0 43px, var(--rule) 43px 44px);
+    opacity: 0.55;
+  }
+
+  /* ---- Rail + stage ------------------------------------------------------------------------- */
+
+  .bk-flow {
+    display: grid;
+    gap: 22px;
+  }
+
+  @container (min-width: 700px) {
+    .bk-flow {
+      grid-template-columns: 13.5rem minmax(0, 1fr);
+      gap: 44px;
+    }
+  }
+
+  .bk-rail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 14px;
+    margin: 0;
+    padding: 0 0 12px;
+    list-style: none;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  @container (min-width: 700px) {
+    .bk-rail {
+      grid-template-columns: 1fr;
+      align-content: start;
+      padding: 0 20px 0 0;
+      border-right: 1.5px solid var(--ink);
+      border-bottom: 0;
+    }
+  }
+
+  .bk-rail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--graphite);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: left;
+  }
+
+  .bk-rail-item:disabled {
+    color: var(--imprint);
+    cursor: default;
+  }
+
+  .bk-rail-item[aria-current="step"] {
+    color: var(--ink);
+    font-weight: 800;
+  }
+
+  .bk-rail-item:not(:disabled):not([aria-current="step"]):hover span:last-child {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+
+  .bk-box {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--paper);
+  }
+
+  .bk-rail-item[aria-current="step"] .bk-box {
+    border-width: 2.5px;
+  }
+
+  .bk-stage {
+    min-width: 0;
+    min-height: 420px;
+  }
+
+  .bk-panel {
+    min-width: 0;
+  }
+
+  .bk-step-title {
+    --wdth: 80;
+    font-size: clamp(22px, 2.2vw, 28px);
+    font-weight: 820;
+    line-height: 1.1;
+    outline-offset: 4px;
+  }
+
+  .bk-note {
+    max-width: 58ch;
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--graphite);
+  }
+
+  .bk-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .bk-next {
+    min-width: 9rem;
+    margin-left: auto;
+  }
+
+  .bk-back {
+    border: 1.5px solid var(--ink);
+  }
+
+  .bk .btn:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* ---- Step 1: chips --------------------------------------------------------------------------- */
+
+  .bk-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .bk-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 9px 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius-tag);
+    background: var(--paper);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    cursor: pointer;
+    transition:
+      background-color 160ms,
+      border-color 160ms,
+      color 160ms,
+      transform 180ms var(--ease-slip),
+      box-shadow 180ms var(--ease-slip);
+  }
+
+  .bk-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Carried in from the symptom guide or your estimate. */
+  .bk-chip[data-carried] {
+    border-style: dashed;
+  }
+
+  .bk-chip:has(input:checked) {
+    border-style: solid;
+    border-color: var(--blue);
+    background: var(--blue-wash);
+    color: var(--blue);
+  }
+
+  .bk-chip:has(input:focus-visible),
+  .bk-opt:has(input:focus-visible),
+  .bk-slot:has(input:focus-visible),
+  .bk-daychip:has(input:focus-visible) {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .bk-chip-tick {
+    display: none;
+  }
+
+  .bk-chip:has(input:checked) .bk-chip-tick {
+    display: inline-flex;
+  }
+
+  /* ---- Step 2: ruled options ----------------------------------------------------------------- */
+
+  .bk-opts {
+    margin-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .bk-opt {
+    position: relative;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--rule);
+    transition: background-color 140ms;
+  }
+
+  .bk-opt:hover {
+    background: var(--paper-shade);
+  }
+
+  .bk-opt label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  /* The whole row picks the option, note included. */
+  .bk-opt label::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .bk-opt .bk-box {
+    margin-top: 1px;
+  }
+
+  .bk-opt-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .bk-opt-note {
+    max-width: 58ch;
+    margin: 3px 0 0 36px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .bk-opt:has(input:checked) .bk-opt-title {
+    color: var(--blue);
+  }
+
+  /* ---- Step 3: days and slots ----------------------------------------------------------------- */
+
+  .bk-days {
+    margin-top: 16px;
+  }
+
+  /* A blue dot on the day that holds your time. */
+  .bk-day-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    vertical-align: 0.15em;
+    visibility: hidden;
+  }
+
+  .bk-day-dot[data-on] {
+    visibility: visible;
+  }
+
+  .bk-daypanel {
+    margin-top: 14px;
+    outline-offset: 6px;
+  }
+
+  .bk-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .bk-slots {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(var(--rows, 10), auto);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 22px;
+    margin-top: 12px;
+  }
+
+  .bk-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    transition:
+      background-color 140ms,
+      color 140ms;
+  }
+
+  .bk-slot:hover:not([data-taken]) {
+    background: var(--paper-shade);
+  }
+
+  .bk-slot-time {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bk-slot[data-taken] {
+    color: var(--graphite);
+    cursor: not-allowed;
+  }
+
+  .bk-slot[data-taken] .bk-slot-time {
+    font-weight: 400;
+  }
+
+  /* Taken: struck through in pencil, each line at its own slight angle. */
+  .bk-slot[data-taken] .bk-slot-time::after {
+    content: "";
+    position: absolute;
+    top: 52%;
+    left: -5px;
+    right: -7px;
+    height: 1.6px;
+    border-radius: 1px;
+    background: var(--graphite);
+    opacity: 0.85;
+    transform: rotate(var(--strike, -3deg));
+  }
+
+  .bk-slot:has(input:checked) {
+    background: var(--blue-wash);
+    color: var(--blue);
+    box-shadow: inset 0 -1.5px 0 var(--blue);
+  }
+
+  .bk-slot-name {
+    overflow: hidden;
+    color: var(--blue);
+    font-size: 16px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Night key drop: days only. */
+  .bk-daylist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .bk-daychip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 12px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius-tag);
+    background: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .bk-daychip:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-wash);
+    color: var(--blue);
+  }
+
+  /* ---- Step 4: fill-in-the-blank fields -------------------------------------------------------- */
+
+  .bk-fields {
+    display: grid;
+    gap: 22px;
+    max-width: 34rem;
+    margin-top: 18px;
+  }
+
+  .bk-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--graphite);
+  }
+
+  .bk-field input,
+  .bk-field textarea {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 8px 2px 6px;
+    border: 0;
+    border-bottom: 1.5px solid var(--ink);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    /* Words (names, cars, notes) go in Archivo; the mono face is for figures only. */
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  .bk-field textarea {
+    min-height: 6.5em;
+    padding: 4px 2px;
+    resize: vertical;
+    /* Ruled like the rest of the book. */
+    background: repeating-linear-gradient(180deg, transparent 0 calc(1.4em - 1px), var(--rule) calc(1.4em - 1px) 1.4em);
+    background-attachment: local;
+    border-bottom: 0;
+  }
+
+  .bk-field input::placeholder,
+  .bk-field textarea::placeholder {
+    color: var(--imprint);
+    opacity: 1;
+  }
+
+  .bk-field input:focus-visible,
+  .bk-field textarea:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+  }
+
+  .bk-field [aria-invalid="true"] {
+    border-bottom-width: 3px;
+  }
+
+  .bk-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 8px;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .bk-error svg {
+    flex: none;
+    margin-top: 1px;
+  }
+
+  /* ---- Review ----------------------------------------------------------------------------------- */
+
+  .bk-summary {
+    margin: 14px 0 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .bk-summary > div {
+    display: grid;
+    gap: 2px 18px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @container (min-width: 640px) {
+    .bk-summary > div {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+  }
+
+  .bk-summary dt {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--graphite);
+  }
+
+  .bk-summary dd {
+    margin: 0;
+    /* Words in Archivo; <Figures> sets the digits (dates, times, phone) in the mono face. */
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .bk-summary dd small {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--graphite);
+  }
+
+  .bk-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-top: 18px;
+    padding: 14px 0;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .bk-price-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--graphite);
+  }
+
+  .bk-price-fig {
+    font-family: var(--font-mono);
+    font-size: clamp(26px, 5cqi, 40px);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bk-promises {
+    display: grid;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bk-promises li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .bk-promises .pen-tick {
+    margin-top: 1px;
+  }
+
+  .bk-confirm {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    margin-top: 26px;
+  }
+
+  .bk-confirm .btn-blue {
+    min-width: 13rem;
+  }
+
+  .bk-confirm .btn[aria-disabled="true"] {
+    cursor: progress;
+  }
+
+  /* ---- The lug-nut loader: five nuts torqued in a star, each paint-penned ------------------- */
+
+  .lug {
+    display: block;
+    flex: none;
+    width: 112px;
+    height: 112px;
+    overflow: visible;
+  }
+
+  .lug-rim {
+    fill: none;
+    stroke: var(--rule);
+    stroke-width: 1.5;
+  }
+
+  .lug-hub {
+    fill: var(--graphite);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .lug-bore {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+
+  .lug-num {
+    fill: var(--graphite);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .lug-nut-body {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .lug-nut-body polygon {
+    fill: var(--ink);
+    stroke: var(--steel);
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+
+  .lug-stud {
+    fill: var(--steel);
+  }
+
+  .lug-mark,
+  .lug-star path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .lug-mark {
+    stroke: var(--paper);
+    stroke-width: 2.4;
+  }
+
+  .lug-star path {
+    stroke: var(--rule);
+    stroke-width: 1.2;
+    opacity: 0.8;
+  }
+
+  .lug[data-run="true"] .lug-nut-body {
+    animation:
+      lug-turn 170ms var(--ease-ink) calc(var(--i) * 200ms) both,
+      lug-seat 40ms ease-in calc(var(--i) * 200ms + 170ms) both;
+  }
+
+  .lug[data-run="true"] .lug-mark {
+    animation: ink-draw 140ms var(--ease-ink) calc(var(--i) * 200ms + 160ms) forwards;
+  }
+
+  .lug[data-run="true"] .lug-star path {
+    animation: ink-draw 160ms var(--ease-ink) calc(var(--i) * 200ms + 40ms) forwards;
+  }
+
+  .bk-status {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--graphite);
+  }
+
+  /* ---- The confirmation slip ------------------------------------------------------------------- */
+
+  .bk-slip {
+    position: relative;
+    max-width: 38rem;
+    margin-top: 26px;
+    padding: 34px clamp(18px, 4cqi, 32px) 24px;
+    border-radius: var(--radius-sheet);
+    background: var(--canary);
+    box-shadow: var(--shadow-paper);
+  }
+
+  .bk-slip-clip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    width: 72px;
+    height: auto;
+    translate: -50% 0;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 2px rgb(18 20 23 / 0.25));
+  }
+
+  .bk-slip-title {
+    --wdth: 74;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 840;
+    line-height: 1.05;
+    outline-offset: 4px;
+  }
+
+  .bk-slip-when {
+    margin-top: 10px;
+    font-family: var(--font-sans);
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .bk-slip-arrival {
+    margin-top: 2px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .bk-slip-note {
+    margin-top: 4px;
+    font-size: 15px;
+    color: var(--graphite);
+  }
+
+  .bk-slip-cal {
+    margin-top: 18px;
+    gap: 8px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .bk-slip-next {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px dashed rgb(18 20 23 / 0.28);
+  }
+
+  .bk-slip-next h4 {
+    --wdth: 88;
+    font-size: 17px;
+    font-weight: 700;
+  }
+
+  .bk-slip-next ol {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: next;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .bk-slip-next li {
+    counter-increment: next;
+  }
+
+  .bk-slip-next li::before {
+    content: counter(next) ". ";
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
+  .bk-slip-demo {
+    margin-top: 18px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--imprint);
+  }
+
+  .bk-slip-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 22px;
+    margin-top: 18px;
+  }
+
+  .bk-slip-again {
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* One burst of paper-punch dots; it sits under the tear-off bar and never takes a click. */
+  .bk-confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+}
+
+@keyframes lug-turn {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 60deg;
+  }
+}
+
+@keyframes lug-seat {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: var(--dx) var(--dy);
+  }
+}
+
+/* ---- Page side-by-side between steps (View Transitions; types from booking-flow.tsx) --------- */
+
+@keyframes bk-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes bk-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes bk-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes bk-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes bk-out-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes bk-in-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* The step panel carries a name only while the stage has data-vt (set by slideStep()). */
+.bk-stage[data-vt] .bk-panel {
+  view-transition-name: bk-step;
+}
+
+::view-transition-group(bk-step) {
+  animation-duration: 240ms;
+  animation-timing-function: var(--ease-slip);
+}
+
+/* Old and new pages sit side by side, not blended. */
+::view-transition-old(bk-step),
+::view-transition-new(bk-step) {
+  mix-blend-mode: normal;
+  height: auto;
+}
+
+:root:active-view-transition-type(bk-forward)::view-transition-old(bk-step) {
+  animation: 240ms var(--ease-slip) both bk-out-left;
+}
+
+:root:active-view-transition-type(bk-forward)::view-transition-new(bk-step) {
+  animation: 240ms var(--ease-slip) both bk-in-right;
+}
+
+:root:active-view-transition-type(bk-back)::view-transition-old(bk-step) {
+  animation: 240ms var(--ease-slip) both bk-out-right;
+}
+
+:root:active-view-transition-type(bk-back)::view-transition-new(bk-step) {
+  animation: 240ms var(--ease-slip) both bk-in-left;
+}
+
+:root:active-view-transition-type(bk-done)::view-transition-old(bk-step) {
+  animation: 160ms ease-out both bk-out-fade;
+}
+
+:root:active-view-transition-type(bk-done)::view-transition-new(bk-step) {
+  animation: 420ms var(--ease-slip) 80ms both bk-in-rise;
+}
+
+/* Taps during the slide land on the live page underneath, never on the snapshot. */
+:root:active-view-transition-type(bk-forward, bk-back, bk-done)::view-transition {
+  pointer-events: none;
+}
+
+/* A step change moves only the step: the rest of the page doesn't cross-fade. */
+:root:active-view-transition-type(bk-forward, bk-back, bk-done)::view-transition-old(root) {
+  display: none;
+}
+
+:root:active-view-transition-type(bk-forward, bk-back, bk-done)::view-transition-new(root) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(bk-step),
+  ::view-transition-old(bk-step),
+  ::view-transition-new(bk-step) {
+    animation: none !important;
+  }
+}
