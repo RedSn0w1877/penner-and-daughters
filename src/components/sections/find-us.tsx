@@ -12,7 +12,7 @@ import { Print } from "@/components/ui/print";
 import { Sheet } from "@/components/ui/sheet";
 import { IMPRINTS } from "@/data/copy";
 import { MEDIA_LABEL } from "@/data/day";
-import { STOREFRONT } from "@/data/media";
+import { STOREFRONT, posterSrcSet } from "@/data/media";
 import { BOOKING_COPY } from "@/data/services";
 import { HOURS_TEXT, SHOP } from "@/lib/facts";
 
@@ -33,16 +33,21 @@ function SecondOpinion() {
   );
 }
 
+const TALL_SIZES = "(min-width: 1024px) 240px, 38vw";
+
 function Storefront({ className }: { className?: string }) {
   const { wide, tall, alt } = STOREFRONT;
   return (
     <Print tilt={-1.3} caption={`${SHOP.road} side · ${MEDIA_LABEL.image}`} className={className}>
       <picture>
-        <source media="(min-width: 640px)" type="image/avif" srcSet={tall.avif} />
-        <source media="(min-width: 640px)" type="image/webp" srcSet={tall.webp} />
-        <source type="image/avif" srcSet={wide.avif} />
+        {/* Shown ~225 px wide on desktop and ~290 on a phone: 480 w covers 1x, the full size 2x. */}
+        <source media="(min-width: 640px)" type="image/avif" srcSet={posterSrcSet(tall, "avif")} sizes={TALL_SIZES} />
+        <source media="(min-width: 640px)" type="image/webp" srcSet={posterSrcSet(tall, "webp")} sizes={TALL_SIZES} />
+        <source type="image/avif" srcSet={posterSrcSet(wide, "avif")} sizes="80vw" />
         <img
           src={wide.webp}
+          srcSet={posterSrcSet(wide, "webp")}
+          sizes="80vw"
           alt={alt}
           width={wide.width}
           height={wide.height}

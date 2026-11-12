@@ -16,7 +16,8 @@ import { Play } from "lucide-react";
 import type { MouseEvent } from "react";
 import { PenTick } from "@/components/ui/pen-tick";
 import { THREAD, type ItemId, type ThreadMedia, type ThreadMessage } from "@/data/inspection";
-import { CLIPS, MEDIA_LABEL, PHOTOS, clipRendition } from "@/data/media";
+import { ThreadScroll } from "@/components/ui/thread-scroll";
+import { CLIPS, MEDIA_LABEL, PHOTOS, clipRendition, posterSrcSet } from "@/data/media";
 import { cx } from "@/lib/cx";
 
 export interface PhoneThreadProps {
@@ -58,9 +59,12 @@ function MediaTile({ media, onOpen }: { media: ThreadMedia; onOpen?: PhoneThread
           style={{ aspectRatio: `${r.poster.width} / ${r.poster.height}` }}
         >
           <picture>
-            <source type="image/avif" srcSet={r.poster.avif} />
+            {/* The tile is ~208 px wide on the desktop phone, ~290 in the stacked thread. */}
+            <source type="image/avif" srcSet={posterSrcSet(r.poster, "avif")} sizes="(min-width: 1024px) 210px, 300px" />
             <img
               src={r.poster.webp}
+              srcSet={posterSrcSet(r.poster, "webp")}
+              sizes="(min-width: 1024px) 210px, 300px"
               alt={clip.alt}
               width={r.poster.width}
               height={r.poster.height}
@@ -92,11 +96,11 @@ function MediaTile({ media, onOpen }: { media: ThreadMedia; onOpen?: PhoneThread
       style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
     >
       <picture>
-        <source type="image/avif" srcSet={`${photo.small?.avif ?? photo.avif} 480w, ${photo.avif} 960w`} sizes="240px" />
+        <source type="image/avif" srcSet={`${photo.small?.avif ?? photo.avif} 480w, ${photo.avif} 960w`} sizes="(min-width: 1024px) 210px, 300px" />
         <img
           src={photo.small?.webp ?? photo.webp}
           srcSet={`${photo.small?.webp ?? photo.webp} 480w, ${photo.webp} 960w`}
-          sizes="240px"
+          sizes="(min-width: 1024px) 210px, 300px"
           alt={photo.alt}
           width={photo.small?.width ?? photo.width}
           height={photo.small?.height ?? photo.height}
@@ -115,6 +119,7 @@ function Message({
   active,
   approved,
   animate,
+  pending = false,
   onOpen,
 }: {
   message: ThreadMessage;
@@ -122,10 +127,12 @@ function Message({
   active: boolean;
   approved: boolean;
   animate: boolean;
+  /** Not arrived yet: laid out (so arriving moves nothing) but invisible, so unread and unreachable. */
+  pending?: boolean;
   onOpen?: PhoneThreadProps["onOpen"];
 }) {
   return (
-    <li className={cx("flex flex-col items-start", animate && "animate-[pd-msg-in_340ms_var(--ease-slip)_both]")}>
+    <li className={cx("flex flex-col items-start", pending && "invisible", animate && "animate-[pd-msg-in_340ms_var(--ease-slip)_both]")}>
       <p className={cx("w-full text-center font-mono text-[12px] text-graphite", showTime ? "mb-1.5" : "sr-only")}>{message.time}</p>
       <div className="relative max-w-[90%]">
         <div
@@ -159,7 +166,8 @@ export function PhoneThread({
 }: PhoneThreadProps) {
   const messages = THREAD.messages;
   const count = variant === "phone" ? Math.max(1, Math.min(messages.length, arrived ?? messages.length)) : messages.length;
-  const shown = messages.slice(0, count);
+  // Every text is laid out; on the phone the ones past `count` wait, invisible (ThreadScroll).
+  const shown = messages;
 
   const header = (
     <div className="relative border-b border-rule bg-paper-shade px-4 pb-2.5 pt-2.5 text-center">
@@ -181,7 +189,7 @@ export function PhoneThread({
   const ol = (
     <ol
       aria-label={THREAD.header}
-      className={cx("flex flex-col gap-3 px-3 pt-3", variant === "phone" ? "flex-[1_0_auto] pb-4" : "pb-5")}
+      className={cx("flex flex-col gap-3 px-3 pt-3", variant === "phone" ? "pb-4" : "pb-5")}
     >
       {shown.map((m, i) => (
         <Message
@@ -190,17 +198,16 @@ export function PhoneThread({
           showTime={i === 0 || shown[i - 1].time !== m.time}
           active={variant === "phone" && !!m.item && m.item === activeItem}
           approved={!!m.item && !!approved[m.item]}
-          animate={variant === "phone" && i > 0}
+          pending={i >= count}
+          animate={variant === "phone" && i > 0 && i < count}
           onOpen={onOpen}
         />
       ))}
     </ol>
   );
-  // On the phone the thread reads from the top while it's short (no blank screen above the first
-  // text), and once it overflows the newest text stays in view: the list grows to fill the screen
-  // (flex 1 0 auto) and the screen pins the list's bottom edge (justify-end, clipped above).
-  const list =
-    variant === "phone" ? <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden">{ol}</div> : ol;
+  // On the phone the thread reads from the top while it's short, and once it overflows the newest
+  // text stays in view: ThreadScroll slides the list up (a transform, so nothing shifts in layout).
+  const list = variant === "phone" ? <ThreadScroll shown={count}>{ol}</ThreadScroll> : ol;
 
   if (variant === "stack") {
     // Phones, tablets and the lite tier show the thread as a plain stack, so say plainly that it's

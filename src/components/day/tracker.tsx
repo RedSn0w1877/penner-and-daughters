@@ -72,7 +72,7 @@ export function Tracker({ standalone = false, className }: { standalone?: boolea
 
   return (
     <Sheet as="article" imprint={IMPRINTS.day} slip={!standalone} className={className} aria-labelledby={`${uid}-title`}>
-      <Heading id={`${uid}-title`} className={standalone ? "type-h2" : "type-h3 text-[clamp(22px,2vw,28px)] [--wdth:80]"}>
+      <Heading id={`${uid}-title`} className={standalone ? "type-h2" : "type-h3 [--wdth:80]"}>
         {TRACKER_COPY.title}
       </Heading>
 
@@ -165,11 +165,13 @@ export function Tracker({ standalone = false, className }: { standalone?: boolea
             <span>{TRACKER_COPY.callAdvisor}</span>
           </a>
         </div>
-      ) : (
-        <p className="mt-6 max-w-[46ch] text-[17px] font-semibold text-ink" role="status">
-          {TRACKER_COPY.notFound}
-        </p>
-      )}
+      ) : null}
+
+      {/* The status region stays mounted and only its text changes: a live region inserted
+          together with its message isn't announced by every screen reader. */}
+      <p className={cx("max-w-[46ch] text-[17px] font-semibold text-ink", !found && "mt-6")} role="status">
+        {found ? null : TRACKER_COPY.notFound}
+      </p>
     </Sheet>
   );
 }

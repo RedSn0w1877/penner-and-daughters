@@ -52,7 +52,27 @@ export interface Poster {
   webp: string;
   width: number;
   height: number;
+  /** The same frame 480 wide, for srcset (a print shown ~200-350 px wide shouldn't decode 960+). */
+  small?: { avif: string; webp: string; width: number };
+  /** 320 wide (the 960 × 540 prints only): the inspection phone's 208 px video tile. */
+  tiny?: { avif: string; webp: string; width: number };
 }
+
+/** "small 480w, full NNNw" when the poster has a 480-wide copy, else just the one file. */
+export function posterSrcSet(poster: Poster, format: "avif" | "webp"): string {
+  if (!poster.small) return poster[format];
+  const tiny = poster.tiny ? `${poster.tiny[format]} ${poster.tiny.width}w, ` : "";
+  return `${tiny}${poster.small[format]} ${poster.small.width}w, ${poster[format]} ${poster.width}w`;
+}
+
+/** The hero's phone band is the counter's width less its gutters: about 92vw. The <picture> and its preload share this. */
+export const HERO_BAND_SIZES = "92vw";
+
+/**
+ * The hero's desktop print (1024px up): 5/12 of the counter plus its 40px overlap, capped at 520,
+ * so about 40vw until 1280 and 512px from there. The <picture> and its preload share this.
+ */
+export const HERO_PRINT_SIZES = "(min-width: 1280px) 512px, 40vw";
 
 export interface ClipRendition {
   width: number;
@@ -99,12 +119,21 @@ function rendition(
     width,
     height,
     sources,
-    poster: { avif: m(`${p.name}.avif`), webp: m(`${p.name}.webp`), width: p.width, height: p.height },
+    poster: {
+      avif: m(`${p.name}.avif`),
+      webp: m(`${p.name}.webp`),
+      width: p.width,
+      height: p.height,
+      small: p.width > 480 ? { avif: m(`${p.name}-480.avif`), webp: m(`${p.name}-480.webp`), width: 480 } : undefined,
+    },
   };
 }
 
-/** 960 × 540 prints: AV1 + H.264 and a poster of the same name. */
-const print540 = (name: string) => rendition(name, 960, 540);
+/** 960 × 540 prints: AV1 + H.264 and a poster of the same name (with 480 and 320 wide copies). */
+const print540 = (name: string): ClipRendition => {
+  const r = rendition(name, 960, 540);
+  return { ...r, poster: { ...r.poster, tiny: { avif: m(`${name}-320.avif`), webp: m(`${name}-320.webp`), width: 320 } } };
+};
 
 export const CLIPS: Record<ClipId, Clip> = {
   hero: {
@@ -210,6 +239,8 @@ export interface Photo {
   height: number;
   /** 480-wide variants for srcset. */
   small?: { avif: string; webp: string; width: number; height: number };
+  /** 240-wide, for the price list's 112 px thumbnail (sharp at 2x). */
+  thumb?: { avif: string; webp: string; width: number; height: number };
   alt: string;
 }
 
@@ -232,14 +263,29 @@ export const PHOTOS: Record<PhotoId, Photo> = {
   bulge: photo("bulge", "AI-generated image: a bulge in the sidewall of a tire on a steel wheel."),
   belt: photo("belt", "AI-generated image: small cracks across the ribs of a serpentine belt."),
   battery: photo("battery", "AI-generated image: a battery terminal clamp with its post cleaned to bare metal, beside the red terminal cover."),
-  filters: photo("filters", "AI-generated image: a dirty air filter next to a new one on a steel bench."),
+  filters: {
+    ...photo("filters", "AI-generated image: a dirty air filter next to a new one on a steel bench."),
+    thumb: { avif: img("filters-v2-240.avif"), webp: img("filters-v2-240.webp"), width: 240, height: 180 },
+  },
   parts: photo("parts", "AI-generated image: new brake pads in their box on a steel counter, next to a new tire."),
   "waiting-room": photo("waiting-room", "AI-generated image: a waiting room with a desk, outlets and a window into the bay."),
 };
 
 export const STOREFRONT = {
-  wide: { avif: img("storefront-16x9-v2.avif"), webp: img("storefront-16x9-v2.webp"), width: 1280, height: 720 },
-  tall: { avif: img("storefront-4x5-v2.avif"), webp: img("storefront-4x5-v2.webp"), width: 864, height: 1080 },
+  wide: {
+    avif: img("storefront-16x9-v2.avif"),
+    webp: img("storefront-16x9-v2.webp"),
+    width: 1280,
+    height: 720,
+    small: { avif: img("storefront-16x9-v2-480.avif"), webp: img("storefront-16x9-v2-480.webp"), width: 480 },
+  },
+  tall: {
+    avif: img("storefront-4x5-v2.avif"),
+    webp: img("storefront-4x5-v2.webp"),
+    width: 864,
+    height: 1080,
+    small: { avif: img("storefront-4x5-v2-480.avif"), webp: img("storefront-4x5-v2-480.webp"), width: 480 },
+  },
   alt: "AI-generated image of the shop from Cooper Mill Road: red brick, two white roll-up doors and the blue office door.",
 } as const;
 

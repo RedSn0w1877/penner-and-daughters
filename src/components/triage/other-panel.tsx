@@ -53,7 +53,7 @@ export function OptionRow({ id, lead, children }: { id: SymptomId; lead?: ReactN
 
 /** A group heading on a panel ("Won't start", "What color is the puddle?"). */
 export function GroupHeading({ children, className }: { children: ReactNode; className?: string }) {
-  return <h3 className={cx("text-[18px] leading-[1.3] font-bold [--wdth:88]", className)}>{children}</h3>;
+  return <h3 className={cx("text-[length:var(--fs-h3)] leading-[1.25] font-bold [--wdth:88]", className)}>{children}</h3>;
 }
 
 const OTHER = TABS.find((t) => t.id === "other")!;

@@ -234,6 +234,8 @@ export const WARRANTY = {
 export const COPY = {
   /** Notice line at the top of every page. */
   notice: `Portfolio sample by ${STUDIO} · ${SHORT} is a fictional shop`,
+  /** The same notice on one line at phone width, so it doesn't push the hero's quick picks under the bar. */
+  noticeShort: `Portfolio sample by ${STUDIO} · fictional shop`,
   /** Right side of every sheet's foot imprint. */
   imprint: `Portfolio sample by ${STUDIO} · fictional business · do not redistribute`,
   /** The printed estimate's imprint. */

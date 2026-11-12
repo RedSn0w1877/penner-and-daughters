@@ -329,7 +329,11 @@ function PinnedStage() {
               <div key={item.id} className="min-w-[min(100%,27rem)] flex-1 animate-[pd-row-in_260ms_var(--ease-slip)_both]">
                 <ItemRow item={item} />
               </div>
-              {item.id === "pads" && <WearRuler value={wear} onChange={changeWear} className="w-full max-w-[25rem]" />}
+              {/* The ruler's slot stays for every item (invisible and inert off the pads), so the
+                  stage above keeps one size and changing items shifts nothing. */}
+              <div className={cx("w-full max-w-[25rem]", item.id !== "pads" && "invisible")} inert={item.id !== "pads"}>
+                <WearRuler value={wear} onChange={changeWear} />
+              </div>
             </div>
           </Sheet>
         </div>

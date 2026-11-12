@@ -115,7 +115,7 @@ export function PartsList({
 export function ItemHeading({ item, as: Tag = "h3", className }: { item: InspectionItem; as?: "h3" | "h4" | "p"; className?: string }) {
   return (
     <div className={className}>
-      <Tag className="text-[22px] font-[800] leading-tight text-ink [--wdth:76] sm:text-[26px]">{item.title}</Tag>
+      <Tag className="text-[length:var(--fs-h3)] font-[800] leading-tight text-ink [--wdth:76]">{item.title}</Tag>
       <p className="mt-1.5 max-w-[56ch] text-[16px] leading-snug text-graphite">{item.subtitle}</p>
     </div>
   );

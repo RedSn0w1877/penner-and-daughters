@@ -14,7 +14,8 @@ import { SHOP } from "@/lib/facts";
 
 /**
  * Sticky header. Transparent on the counter; after 80px of scroll it becomes a paper strip with a
- * 1.5px ink rule (no blur). Desktop: wordmark, the six links, open-now chip, the number, Book.
+ * 1.5px ink rule (no blur). Under 1024px it turns as soon as the page scrolls: the hero print's
+ * binder clip sits just under the header there and would otherwise slide up behind the number. Desktop: wordmark, the six links, open-now chip, the number, Book.
  * Under 1024px: wordmark, the number, Menu. The scroll state comes from an IntersectionObserver
  * sentinel, so there's no scroll listener.
  */
@@ -37,8 +38,8 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* 80px below the header's resting place (notice line 24px + 80px). */}
-      <div ref={sentinelRef} aria-hidden="true" className="pointer-events-none absolute left-0 top-[104px] h-px w-px" />
+      {/* 80px below the header's resting place (notice line 24px + 80px); at the very top under 1024px. */}
+      <div ref={sentinelRef} aria-hidden="true" className="pointer-events-none absolute left-0 top-[104px] h-px w-px max-lg:top-0" />
       <header ref={headerRef} className="site-header" data-scrolled="false">
         <div className="counter-wrap flex h-full items-center gap-2 min-[400px]:gap-3 lg:gap-6">
           <Link

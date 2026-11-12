@@ -3,7 +3,7 @@
 import { preload } from "react-dom";
 import { HeroPrint } from "@/components/hero/hero-print";
 import { HeroSheet } from "@/components/hero/hero-sheet";
-import { clipRendition } from "@/data/media";
+import { HERO_BAND_SIZES, HERO_PRINT_SIZES, clipRendition, posterSrcSet } from "@/data/media";
 
 /**
  * #top: the repair order and its film print.
@@ -19,8 +19,24 @@ import { clipRendition } from "@/data/media";
 export function Hero() {
   const desk = clipRendition("hero", "print").poster;
   const band = clipRendition("hero", "band").poster;
-  preload(desk.avif, { as: "image", type: "image/avif", fetchPriority: "high", media: "(min-width: 1024px)" });
-  preload(band.avif, { as: "image", type: "image/avif", fetchPriority: "high", media: "(max-width: 1023px)" });
+  // Both <source>s have a srcset (480 w for 1x, the full size for 2x), so each preload carries the
+  // same srcset and sizes: the browser picks the same file once.
+  preload(desk.avif, {
+    as: "image",
+    type: "image/avif",
+    fetchPriority: "high",
+    media: "(min-width: 1024px)",
+    imageSrcSet: posterSrcSet(desk, "avif"),
+    imageSizes: HERO_PRINT_SIZES,
+  });
+  preload(band.avif, {
+    as: "image",
+    type: "image/avif",
+    fetchPriority: "high",
+    media: "(max-width: 1023px)",
+    imageSrcSet: posterSrcSet(band, "avif"),
+    imageSizes: HERO_BAND_SIZES,
+  });
 
   return (
     <section id="top" aria-labelledby="hero-title" className="pb-6 lg:pb-4">

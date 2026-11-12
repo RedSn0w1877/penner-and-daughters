@@ -152,7 +152,7 @@
 
   .bk-step-title {
     --wdth: 80;
-    font-size: clamp(22px, 2.2vw, 28px);
+    font-size: var(--fs-h3);
     font-weight: 820;
     line-height: 1.1;
     outline-offset: 4px;

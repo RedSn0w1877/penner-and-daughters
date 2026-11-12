@@ -105,8 +105,13 @@ function island<P extends object>({ server: Server, load, mode, margin = "150% 0
       } else if (el) {
         io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && go(), { rootMargin: margin });
         // The wrapper is display: contents (no box, so it never intersects): watch the server
-        // DOM's own top-level elements instead.
-        for (const child of Array.from(el.children)) io.observe(child);
+        // DOM's own top-level elements instead. Inside a content-visibility: auto section those
+        // are skipped (no layout) until the section is nearly on screen, so the observer would
+        // only see them once they're in view and the swap would happen in front of the reader:
+        // watch the section's own box (sized by contain-intrinsic-size) there instead.
+        const section = el.closest("section");
+        if (section && getComputedStyle(section).contentVisibility === "auto") io.observe(section);
+        else for (const child of Array.from(el.children)) io.observe(child);
         wake.forEach((type) => el.addEventListener(type, go, { passive: true }));
         if (idleOnFull && tier === "full") cancelIdle = afterLoadIdle(go);
       }

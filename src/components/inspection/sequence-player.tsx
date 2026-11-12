@@ -168,6 +168,8 @@ export function SequencePlayer({
     let raf = 0;
     let disposed = false;
     let drawn = "";
+    /** The opacity of what's on the canvas now (the part fades in while it assembles). */
+    let drawnAlpha = 0;
     let cssW = 0;
     let cssH = 0;
     let near = false;
@@ -204,12 +206,11 @@ export function SequencePlayer({
       const c = cacheFor(part);
       const picked = pick(p, item);
       const index = sparse ? sparseIndex(picked.index) : picked.index;
-      const alpha = picked.alpha;
+      let alpha = picked.alpha;
       const wear = drive.wear;
       const useWear = part === "brake" && p >= TIMING.explodeEnd && wear !== WEAR.asFound;
       const still = nearestWearStill(wear);
       const key = useWear ? `wear-${still}` : `f${index}`;
-      const stamp = `${part}:${key}:${alpha.toFixed(3)}:${cssW}x${cssH}:${drive.insets.left}`;
 
       const blobs = c.blobs!;
       const parsed = await loadParsed(part);
@@ -220,17 +221,23 @@ export function SequencePlayer({
       );
       if (disposed || !bmp) return;
       // A newer frame may have been asked for while this one decoded: skip this one, unless the
-      // canvas has nothing of this part on it yet (an older frame beats an empty box).
+      // canvas has nothing of this part on it yet (an older frame beats an empty box), or only a
+      // faint one from the assembling fade. On a fast touch scroll the next frame is always still
+      // decoding, so skipping then left that faint frame up as a ghost: draw this one instead, at
+      // the opacity the newer progress wants.
       const now = drive.state;
       if (now.item !== item || now.p !== p) {
         schedule();
-        if (drawn.startsWith(`${part}:`)) return;
+        if (drawn.startsWith(`${part}:`) && drawnAlpha >= 0.999) return;
+        if (now.item === item) alpha = pick(now.p, item).alpha;
       }
       const b = box();
+      const stamp = `${part}:${key}:${alpha.toFixed(3)}:${cssW}x${cssH}:${drive.insets.left}`;
       if (stamp !== drawn) {
         drawn = stamp;
+        drawnAlpha = Math.max(0, Math.min(1, alpha));
         ctx.clearRect(0, 0, cssW, cssH);
-        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.globalAlpha = drawnAlpha;
         ctx.drawImage(bmp, b.left, b.top, b.width, b.height);
         ctx.globalAlpha = 1;
       }

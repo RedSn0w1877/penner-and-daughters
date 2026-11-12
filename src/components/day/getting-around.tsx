@@ -16,7 +16,7 @@ export function GettingAround({ className }: { className?: string }) {
   const small = photo.small!;
   return (
     <Sheet as="article" imprint={IMPRINTS.day} className={className} aria-labelledby="getting-around-title">
-      <h3 id="getting-around-title" className="type-h3 text-[clamp(22px,2vw,28px)] [--wdth:80]">
+      <h3 id="getting-around-title" className="type-h3 [--wdth:80]">
         {GETTING_AROUND_COPY.title}
       </h3>
       <div className="mt-6 grid gap-x-10 gap-y-8 md:grid-cols-[minmax(0,1fr)_minmax(0,0.66fr)] md:items-start">

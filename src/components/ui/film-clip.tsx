@@ -5,7 +5,7 @@
 import { Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { LABELS } from "@/data/copy";
-import { CLIPS, clipRendition, type ClipId, type ClipVariant } from "@/data/media";
+import { CLIPS, clipRendition, posterSrcSet, type ClipId, type ClipVariant } from "@/data/media";
 import { cx } from "@/lib/cx";
 import { useTier } from "@/lib/tier";
 import { useInView, useLoadIdle, useMedia, usePageVisible } from "@/lib/use-media";
@@ -34,6 +34,13 @@ export interface FilmClipProps {
   priority?: boolean;
   /** Poster alt text; defaults to the clip's description. */
   alt?: string;
+  /**
+   * The poster's shown width, for its srcset (480 w plus the full size). Leave it out where the
+   * clip runs wide: the browser then assumes 100vw and takes the full size, as before.
+   */
+  sizes?: string;
+  /** The same for the phone variant's poster (under 1024px). */
+  phoneSizes?: string;
   /** Show the Pause / Play button on clips over 5 s (default on). */
   controls?: boolean;
   className?: string;
@@ -56,6 +63,8 @@ export function FilmClip({
   active,
   priority = false,
   alt,
+  sizes,
+  phoneSizes,
   controls = true,
   className,
   style,
@@ -119,11 +128,17 @@ export function FilmClip({
   return (
     <div ref={wrapRef} className={cx("film", className)} data-variant={variant} data-responsive={phone ? "true" : undefined} style={vars}>
       <picture>
-        {phone && <source media="(max-width: 1023px)" type="image/avif" srcSet={phone.poster.avif} />}
-        {phone && <source media="(max-width: 1023px)" type="image/webp" srcSet={phone.poster.webp} />}
-        <source type="image/avif" srcSet={desk.poster.avif} />
+        {phone && (
+          <source media="(max-width: 1023px)" type="image/avif" srcSet={posterSrcSet(phone.poster, "avif")} sizes={phoneSizes} />
+        )}
+        {phone && (
+          <source media="(max-width: 1023px)" type="image/webp" srcSet={posterSrcSet(phone.poster, "webp")} sizes={phoneSizes} />
+        )}
+        <source type="image/avif" srcSet={posterSrcSet(desk.poster, "avif")} sizes={sizes} />
         <img
           src={desk.poster.webp}
+          srcSet={desk.poster.small ? posterSrcSet(desk.poster, "webp") : undefined}
+          sizes={sizes}
           alt={alt ?? clip.alt}
           width={desk.poster.width}
           height={desk.poster.height}

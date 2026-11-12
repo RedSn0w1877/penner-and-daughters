@@ -40,6 +40,9 @@ import { DayPrint } from "./day-print";
 import { swingKeyTag } from "./key-tag";
 import { StatusBoard } from "./status-board";
 
+/** The whole day's thread: the phone lays it out up front, so a text arriving moves nothing in layout. */
+const ALL_TEXTS = [NIGHT_REPLY, ...textsThrough(DAY_STEPS.length)];
+
 /* Scroll map, in vh of pinned scroll. */
 const PIN_VH = 380;
 const LINE_AT = 22;
@@ -340,7 +343,8 @@ export function DayChapter() {
 
             <div className="flex min-h-0 items-center" aria-hidden="true">
               <DayPhone
-                texts={texts}
+                texts={ALL_TEXTS}
+                shown={texts.length}
                 freshFrom={forward ? before : Infinity}
                 badge={arrived}
                 badgeKey={moment.step}

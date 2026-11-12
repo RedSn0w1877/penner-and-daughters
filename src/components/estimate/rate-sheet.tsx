@@ -69,8 +69,31 @@ function showAllLabel(group: ServiceGroup, count: number): string {
   return `Show all ${group.title.toLowerCase()} jobs (${count})`;
 }
 
+/**
+ * Each group's rendered height (px, collapsed) by the price list's width: under 520px (phones),
+ * 520-599px (the 1024-1279 desktop column) and 600px up. They size the group while it skips
+ * rendering (content-visibility in estimate-print.css), so a group that renders out of view
+ * (after a jump down the page) changes the page's height by next to nothing. Measured at
+ * 360-1920; re-measure when a group's copy changes.
+ */
+const GROUP_HEIGHTS: Record<string, readonly [number, number, number]> = {
+  brakes: [780, 686, 586],
+  battery: [940, 868, 710],
+  engine: [830, 760, 610],
+  cooling: [900, 830, 662],
+  ac: [515, 470, 366],
+  steering: [945, 856, 686],
+  tires: [938, 820, 686],
+  maintenance: [928, 796, 684],
+  used: [305, 270, 238],
+};
+
 function Group({ group }: { group: ServiceGroup }) {
   const titleId = `rs-group-${group.id}`;
+  const heights = GROUP_HEIGHTS[group.id];
+  const sizeVars = heights
+    ? ({ "--cis-s": `${heights[0]}px`, "--cis-m": `${heights[1]}px`, "--cis-l": `${heights[2]}px` } as CSSProperties)
+    : undefined;
   const services = servicesIn(group.id);
   const collapse = services.length > COLLAPSE_OVER;
   const shown = collapse ? services.slice(0, SHOWN_ROWS) : services;
@@ -81,7 +104,7 @@ function Group({ group }: { group: ServiceGroup }) {
     </h3>
   );
   return (
-    <section className="rs-group" aria-labelledby={titleId}>
+    <section className="rs-group" aria-labelledby={titleId} style={sizeVars}>
       <header className="rs-group-head">
         {group.page ? (
           <ViewTransition name={serviceTitleTransition(group.page.slug)} share="auto" default="none">
@@ -167,12 +190,14 @@ function Row({ service, index }: { service: Service; index: number }) {
 function FilterPhoto() {
   const photo = PHOTOS.filters;
   const small = photo.small!;
+  // The thumbnail is 112 px wide: the 240 w copy is sharp at 2x without decoding 480.
+  const thumb = photo.thumb ?? small;
   return (
     <details className="rs-photo">
       <summary className="rs-photo-thumb">
         <picture>
-          <source type="image/avif" srcSet={small.avif} />
-          <img src={small.webp} alt={photo.alt} width={small.width} height={small.height} loading="lazy" decoding="async" />
+          <source type="image/avif" srcSet={thumb.avif} />
+          <img src={thumb.webp} alt={photo.alt} width={thumb.width} height={thumb.height} loading="lazy" decoding="async" />
         </picture>
       </summary>
       <Print className="rs-photo-print" tilt={-0.8} clip={false} caption={MEDIA_LABEL.image}>

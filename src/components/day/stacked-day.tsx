@@ -36,7 +36,7 @@ function StackedDay() {
           {/* 7:12 PM, the night drop. */}
           <div className="mt-10 grid gap-7 lg:mt-16 lg:grid-cols-12 lg:items-center lg:gap-10">
             <figure className="-mx-2 sm:mx-0 lg:col-span-7 lg:col-start-6 lg:row-start-1">
-              <FilmClip id="night-drop" variant="band" />
+              <FilmClip id="night-drop" variant="band" sizes="(min-width: 1024px) 58vw, 100vw" />
               <figcaption className="mono-imprint mt-2 px-2 text-night-dim sm:px-0">{MEDIA_LABEL.footage}</figcaption>
             </figure>
             <div className="lg:col-span-5 lg:row-start-1">
@@ -76,7 +76,7 @@ function StackedDay() {
       <div className="counter-wrap">
         <Sheet imprint={IMPRINTS.day} aria-labelledby="day-sheet-title">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-            <h3 id="day-sheet-title" className="type-h3 text-[clamp(22px,2vw,28px)] [--wdth:80]">
+            <h3 id="day-sheet-title" className="type-h3 [--wdth:80]">
               {DAY_SHEET.title}
             </h3>
             <p className="mono-measure text-graphite">{DAY_SHEET.car}</p>

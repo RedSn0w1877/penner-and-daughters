@@ -160,7 +160,7 @@ export function Verdict({ tier }: { tier: Tier }) {
       className="scroll-mt-[calc(var(--header-h)+16px)] rounded-[2px] border-[1.5px] border-ink bg-paper outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue"
     >
       <header className="flex items-center justify-between gap-3 border-b-[1.5px] border-ink bg-paper-shade px-4 py-2.5 sm:px-5">
-        <h3 id="triage-verdict-title" className="text-[16px] font-bold text-ink [--wdth:88]">
+        <h3 id="triage-verdict-title" className="text-[length:var(--fs-h3)] leading-[1.25] font-bold text-ink [--wdth:88]">
           {VERDICT_COPY.title}
         </h3>
       </header>

@@ -76,7 +76,7 @@ export function SafetyLists({ className }: { className?: string }) {
       )}
     >
       <div>
-        <h3 className="flex items-center gap-2.5 text-[18px] leading-[1.3] font-bold [--wdth:88]">
+        <h3 className="flex items-center gap-2.5 text-[length:var(--fs-h3)] leading-[1.25] font-bold [--wdth:88]">
           <Mark kind="stop" />
           {SAFETY_COPY.pullOver}
         </h3>
@@ -84,7 +84,7 @@ export function SafetyLists({ className }: { className?: string }) {
         <CallButton size="md" className="mt-5" />
       </div>
       <div>
-        <h3 className="flex items-center gap-2.5 text-[18px] leading-[1.3] font-bold [--wdth:88]">
+        <h3 className="flex items-center gap-2.5 text-[length:var(--fs-h3)] leading-[1.25] font-bold [--wdth:88]">
           <Mark kind="ok" />
           {SAFETY_COPY.normal}
         </h3>

@@ -126,12 +126,25 @@
   }
 
   /* Groups skip rendering until they're near the viewport. A little side padding keeps the focus
-     rings of edge buttons inside the paint containment that comes with that. */
+     rings of edge buttons inside the paint containment that comes with that. Each group carries
+     its own measured height for the list's width (GROUP_HEIGHTS in rate-sheet.tsx). */
   .rs-group {
     margin: clamp(30px, 5cqi, 46px) -6px 0;
     padding-inline: 6px;
     content-visibility: auto;
-    contain-intrinsic-size: auto 480px;
+    contain-intrinsic-size: auto var(--cis-s, 480px);
+  }
+
+  @container (min-width: 520px) {
+    .rs-group {
+      contain-intrinsic-size: auto var(--cis-m, 480px);
+    }
+  }
+
+  @container (min-width: 600px) {
+    .rs-group {
+      contain-intrinsic-size: auto var(--cis-l, 480px);
+    }
   }
 
   .rs-group-head {
@@ -146,7 +159,7 @@
 
   .rs-group-title {
     --wdth: 74;
-    font-size: 23px;
+    font-size: var(--fs-h3);
     font-weight: 820;
     line-height: 1.1;
   }
@@ -660,7 +673,7 @@
 
   .rs-foot-title {
     --wdth: 88;
-    font-size: 18px;
+    font-size: var(--fs-h3);
     font-weight: 700;
     color: var(--ink);
   }
@@ -892,7 +905,7 @@
 
   .est-title {
     --wdth: 80;
-    font-size: 22px;
+    font-size: var(--fs-h3);
     font-weight: 820;
     line-height: 1.1;
     outline-offset: 4px;

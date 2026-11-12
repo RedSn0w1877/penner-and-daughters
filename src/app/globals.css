@@ -154,6 +154,11 @@
     --tearoff-h: 64px;
     --notice-h: 24px;
     --gutter: 16px;
+
+    /* One h3 size for every h3 (price groups and their footnote, the estimate, booking steps, the
+       day sheet, the inspection items, the symptom guide and its verdict): 20px on a phone, 23px on
+       desktop. Only the booking confirmation's title is set larger, as the end of the flow. */
+    --fs-h3: clamp(20px, 1.6vw, 23px);
     --section-pad: clamp(72px, 10vw, 140px);
 
     /* Z order: header 40 · tear-off bar 50 · menu 60 · toasts 70 · lightbox 80 */
@@ -195,8 +200,16 @@
     scroll-padding-top: calc(var(--header-h) + 8px);
   }
 
+  /* A clicked in-page link glides there; while the keyboard is in use (data-kbd, set by the inline
+     script in layout.tsx) focus moving down the page jumps at once: a keyboard action never
+     animates, and the focused control is in view the moment it's focused. !important because
+     ScrollTrigger writes the smooth value back inline after each refresh. */
   html:not(.lenis) {
     scroll-behavior: smooth;
+  }
+
+  html[data-kbd] {
+    scroll-behavior: auto !important;
   }
 
   body {
@@ -262,11 +275,46 @@
     scroll-behavior: auto !important;
   }
 
-  /* These skip rendering until they're near the viewport. */
+  /* These skip rendering until they're near the viewport. Each estimate is the box's measured
+     content height (360-1920 wide, after its islands come alive), so rendering one changes the
+     page's height by next to nothing, wherever the reader is; "auto" then remembers the real size.
+     Re-measure when a section's copy or layout changes. */
   #warranty,
   #find-us {
     content-visibility: auto;
-    contain-intrinsic-size: auto 1100px;
+  }
+  #warranty {
+    contain-intrinsic-size: auto 1440px;
+  }
+  #find-us {
+    contain-intrinsic-size: auto 1245px;
+  }
+
+  @media (max-width: 1439.98px) {
+    #find-us {
+      contain-intrinsic-size: auto 1150px;
+    }
+  }
+
+  @media (max-width: 1279.98px) {
+    #find-us {
+      contain-intrinsic-size: auto 1030px;
+    }
+  }
+
+  @media (max-width: 1023.98px) {
+    #warranty {
+      contain-intrinsic-size: auto 1400px;
+    }
+    #find-us {
+      contain-intrinsic-size: auto 1640px;
+    }
+  }
+
+  @media (max-width: 639.98px) {
+    #warranty {
+      contain-intrinsic-size: auto 1770px;
+    }
   }
 
   /* The symptom guide sheet and each price-list group skip style and layout until they're near the
@@ -275,18 +323,36 @@
      a pinned section (#inspection, #your-day): containment would trap the pin's position: fixed. */
   #whats-wrong {
     content-visibility: auto;
-    contain-intrinsic-size: auto 2400px;
+    contain-intrinsic-size: auto 1510px;
   }
 
   @media (max-width: 1023.98px) {
     #whats-wrong {
-      contain-intrinsic-size: auto 3200px;
+      contain-intrinsic-size: auto 2010px;
+    }
+  }
+
+  @media (max-width: 639.98px) {
+    #whats-wrong {
+      contain-intrinsic-size: auto 2395px;
     }
   }
 
   .site-footer {
     content-visibility: auto;
-    contain-intrinsic-size: auto 560px;
+    contain-intrinsic-size: auto 535px;
+  }
+
+  @media (max-width: 1023.98px) {
+    .site-footer {
+      contain-intrinsic-size: auto 820px;
+    }
+  }
+
+  @media (max-width: 639.98px) {
+    .site-footer {
+      contain-intrinsic-size: auto 950px;
+    }
   }
 
   /*
@@ -374,7 +440,7 @@
 
 @utility type-h3 {
   --wdth: 88;
-  font-size: 20px;
+  font-size: var(--fs-h3);
   font-weight: 700;
   line-height: 1.2;
 }

@@ -6,9 +6,10 @@
  * "Notification badge": it slides in and pops, then clears once the texts have been seen).
  *
  * Shop bubbles are paper-shade with ink; the customer's are ballpoint blue (blue is always you).
- * Server-safe; no hooks.
+ * Server-safe; no hooks (the phone's ThreadScroll is its own client component).
  */
 import type { ReactNode } from "react";
+import { ThreadScroll } from "@/components/ui/thread-scroll";
 import { DAY_SHEET, type DayText } from "@/data/day";
 import { SHOP } from "@/lib/facts";
 import { cx } from "@/lib/cx";
@@ -37,11 +38,22 @@ function Sender({ text, named }: { text: DayText; named: boolean }) {
 }
 
 /** One text. `named` prints the sender with the time (the stacked list has no phone header). */
-export function TextBubble({ text, named = false, fresh = false }: { text: DayText; named?: boolean; fresh?: boolean }) {
+export function TextBubble({
+  text,
+  named = false,
+  fresh = false,
+  pending = false,
+}: {
+  text: DayText;
+  named?: boolean;
+  fresh?: boolean;
+  /** Not arrived yet (the phone): laid out, so arriving moves nothing, but invisible. */
+  pending?: boolean;
+}) {
   const you = text.from === "you";
   return (
     <li
-      className={cx("day-bubble flex max-w-[88%] flex-col", you ? "items-end self-end" : "items-start self-start")}
+      className={cx("day-bubble flex max-w-[88%] flex-col", you ? "items-end self-end" : "items-start self-start", pending && "invisible")}
       data-fresh={fresh ? "true" : undefined}
     >
       <span
@@ -86,14 +98,17 @@ export function TextList({ texts, className }: { texts: readonly DayText[]; clas
  */
 export function DayPhone({
   texts,
+  shown = texts.length,
   freshFrom = Infinity,
   badge = 0,
   badgeKey,
   footer,
   className,
 }: {
+  /** Every text of the day, so arriving moves nothing in layout; the first `shown` have arrived. */
   texts: ReadonlyArray<DayText & { key: string }>;
-  /** Texts at or after this index slide in. */
+  shown?: number;
+  /** Texts at or after this index (and before `shown`) slide in. */
   freshFrom?: number;
   badge?: number;
   badgeKey?: string | number;
@@ -123,15 +138,15 @@ export function DayPhone({
           </span>
         )}
       </div>
-      {/* Reads from the top while short; once it overflows, the newest text stays in view (the list
-          grows to fill the screen, and the screen pins its bottom edge). */}
-      <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden">
-        <ol className="flex flex-[1_0_auto] flex-col gap-3 px-3 pb-4 pt-3">
+      {/* Reads from the top while short; once it overflows, the newest text stays in view: the list
+          slides up (a transform), so a text arriving never shifts the layout. */}
+      <ThreadScroll shown={shown}>
+        <ol className="flex flex-col gap-3 px-3 pb-4 pt-3">
           {texts.map((t, i) => (
-            <TextBubble key={t.key} text={t} fresh={i >= freshFrom} />
+            <TextBubble key={t.key} text={t} fresh={i >= freshFrom && i < shown} pending={i >= shown} />
           ))}
         </ol>
-      </div>
+      </ThreadScroll>
       {footer}
     </div>
   );

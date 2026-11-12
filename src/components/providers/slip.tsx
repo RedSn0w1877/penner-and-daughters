@@ -63,6 +63,11 @@ export function SlipController() {
       void import("@/lib/gsap").then(({ gsap }) => {
         if (disposed) return;
         const tweens = sheets.map((sheet) => {
+          // A sheet already scrolled past its end when this (idle) import lands gets onLeave
+          // synchronously, inside fromTo, before `tween` exists: note it and kill the tween once
+          // fromTo returns, never touch `tween` from inside its own constructor.
+          let made = false;
+          let left = false;
           const tween = gsap.fromTo(
             sheet,
             { "--slip": 1 },
@@ -77,12 +82,15 @@ export function SlipController() {
                 refreshPriority: -1,
                 onLeave: (self) => {
                   self.kill();
-                  tween.kill();
+                  if (made) tween.kill();
+                  else left = true;
                   settle(sheet);
                 },
               },
             },
           );
+          made = true;
+          if (left) tween.kill();
           return tween;
         });
         kill = () =>

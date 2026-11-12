@@ -8,7 +8,13 @@
  *   full tier   tilts up to ±6° toward the pointer and flips over (CSS rotateY, 600 ms) on a click,
  *               a tap or Enter on its button
  *   touch tier  flips on a tap
- *   lite, no JS front and back side by side (the server markup), nothing moves
+ *   lite, no JS front and back side by side, nothing moves, no flip buttons
+ *
+ * Every tier renders the same markup (both faces in one grid cell, the back turned over); CSS
+ * decides between the card and the side-by-side pair. So the server HTML already has the live
+ * card's size, and the island coming alive (or a tier arriving) moves nothing in layout. Before
+ * the tier is known, the side-by-side pair is shown only without JS or with reduced motion (which
+ * is the lite tier); otherwise the card, its turned-over back hidden.
  *
  * The face you can't see is inert, so focus never lands on a hidden button, and flipping moves
  * focus to the button on the new face.
@@ -77,7 +83,7 @@ function Front({ action }: { action?: ReactNode }) {
         {WARRANTY.embossed}
       </p>
       <p className="mt-4 max-w-[30ch] text-[17px] font-semibold leading-snug text-ink">{WARRANTY.card}</p>
-      {action && <div className="mt-6">{action}</div>}
+      {action && <div className="wcard-action mt-6">{action}</div>}
     </div>
   );
 }
@@ -99,10 +105,46 @@ function Back({ action }: { action?: ReactNode }) {
           </div>
         ))}
       </dl>
-      {action && <div className="mt-auto pt-4">{action}</div>}
+      {action && <div className="wcard-action mt-auto pt-4">{action}</div>}
     </div>
   );
 }
+
+/**
+ * The card and the side-by-side pair from one markup. `[data-mode]` is "flip" (full, touch) or
+ * "pair" (lite); with no mode yet (the server HTML, before the island comes alive) the pair shows
+ * only without JS or with reduced motion.
+ */
+const STYLES = `
+@layer properties, theme, base, components, utilities;
+@layer components {
+  .wcard-faces { display: grid; }
+  .wcard-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .wcard-back { transform: rotateY(180deg); }
+  html.js .wcard:not([data-mode]) .wcard-back { visibility: hidden; }
+
+  .wcard[data-mode="pair"] .wcard-faces { gap: 24px; }
+  .wcard[data-mode="pair"] .wcard-face { grid-area: auto; }
+  .wcard[data-mode="pair"] .wcard-back { transform: none; }
+  .wcard[data-mode="pair"] .wcard-action { display: none; }
+  html:not(.js) .wcard .wcard-faces { gap: 24px; }
+  html:not(.js) .wcard .wcard-face { grid-area: auto; }
+  html:not(.js) .wcard .wcard-back { transform: none; visibility: visible; }
+  html:not(.js) .wcard .wcard-action { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .wcard:not([data-mode="flip"]) .wcard-faces { gap: 24px; }
+    .wcard:not([data-mode="flip"]) .wcard-face { grid-area: auto; }
+    .wcard:not([data-mode="flip"]) .wcard-back { transform: none; visibility: visible; }
+    .wcard:not([data-mode="flip"]) .wcard-action { display: none; }
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) {
+    .wcard[data-mode="pair"] .wcard-faces,
+    html:not(.js) .wcard .wcard-faces { grid-template-columns: 1fr 1fr; }
+  }
+  @media (min-width: 640px) and (max-width: 1023.98px) and (prefers-reduced-motion: reduce) {
+    .wcard:not([data-mode="flip"]) .wcard-faces { grid-template-columns: 1fr 1fr; }
+  }
+}`;
 
 export function WarrantyCard({ className }: { className?: string }) {
   const tier = useTier();
@@ -119,18 +161,8 @@ export function WarrantyCard({ className }: { className?: string }) {
     (flipped ? backButton : frontButton).current?.focus({ preventScroll: true });
   }, [flipped]);
 
-  if (tier === null || tier === "lite") {
-    return (
-      <div className={cx("grid gap-6 sm:grid-cols-2 lg:grid-cols-1", className)}>
-        <CardStock>
-          <Front />
-        </CardStock>
-        <CardStock>
-          <Back />
-        </CardStock>
-      </div>
-    );
-  }
+  const mode = tier === null ? undefined : tier === "lite" ? "pair" : "flip";
+  const live = mode === "flip";
 
   const flip = (to: boolean, viaButton: boolean) => {
     moved.current = viaButton;
@@ -138,7 +170,7 @@ export function WarrantyCard({ className }: { className?: string }) {
   };
 
   const onCardClick = (e: MouseEvent<HTMLDivElement>) => {
-    if ((e.target as Element).closest("a, button")) return;
+    if (!live || (e.target as Element).closest("a, button")) return;
     flip(!flipped, false);
   };
 
@@ -157,37 +189,39 @@ export function WarrantyCard({ className }: { className?: string }) {
     if (tiltRef.current) tiltRef.current.style.transform = "";
   };
 
+  // Rendered on every tier (so the card keeps one size); hidden by CSS where nothing flips.
   const button = (label: string, to: boolean, ref: typeof frontButton) => (
-    <button ref={ref} type="button" className="btn btn-ink" data-size="sm" onClick={() => flip(to, true)}>
+    <button ref={ref} type="button" className="btn btn-ink" data-size="sm" onClick={live ? () => flip(to, true) : undefined}>
       {label}
     </button>
   );
 
   return (
-    <div className={cx("[perspective:1100px]", className)}>
+    <div className={cx("wcard [perspective:1100px]", className)} data-mode={mode}>
+      <style href="warranty-card" precedence="default">
+        {STYLES}
+      </style>
       <div
         ref={tiltRef}
         className="transition-transform duration-200 ease-out [transform-style:preserve-3d] motion-reduce:transition-none"
-        onPointerEnter={onPointerEnter}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
+        onPointerEnter={live ? onPointerEnter : undefined}
+        onPointerMove={live ? onPointerMove : undefined}
+        onPointerLeave={live ? onPointerLeave : undefined}
       >
         <div
           className={cx(
-            "grid cursor-pointer transition-transform duration-[600ms] ease-slip [transform-style:preserve-3d]",
-            flipped && "[transform:rotateY(180deg)]",
+            "wcard-faces transition-transform duration-[600ms] ease-slip [transform-style:preserve-3d]",
+            live && "cursor-pointer",
+            live && flipped && "[transform:rotateY(180deg)]",
           )}
-          onClick={onCardClick}
+          onClick={live ? onCardClick : undefined}
         >
-          <div className="[grid-area:1/1] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]" inert={flipped}>
+          <div className="wcard-face" inert={live && flipped}>
             <CardStock className="h-full">
               <Front action={button(COPY.flip, true, frontButton)} />
             </CardStock>
           </div>
-          <div
-            className="[grid-area:1/1] [backface-visibility:hidden] [-webkit-backface-visibility:hidden] [transform:rotateY(180deg)]"
-            inert={!flipped}
-          >
+          <div className="wcard-face wcard-back" inert={live && !flipped}>
             <CardStock className="h-full">
               <Back action={button(COPY.flipBack, false, backButton)} />
             </CardStock>

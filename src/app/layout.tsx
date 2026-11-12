@@ -57,12 +57,19 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const KBD_SCRIPT =
+  "var d=document.documentElement;d.classList.add('js');" +
+  "addEventListener('keydown',function(){if(!('kbd' in d.dataset))d.dataset.kbd=''},true);" +
+  "addEventListener('pointerdown',function(){if('kbd' in d.dataset)delete d.dataset.kbd},true)";
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${archivo.variable} ${mono.variable}`} suppressHydrationWarning>
       <body>
-        {/* Before first paint: lets CSS start pen strokes unwritten only when JS will write them. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* Before first paint: lets CSS start pen strokes unwritten only when JS will write them. And
+            data-kbd while the keyboard is in use, so focus moving down the page jumps instead of
+            gliding (globals.css): a keyboard action never animates. */}
+        <script dangerouslySetInnerHTML={{ __html: KBD_SCRIPT }} />
         {/* Machine-readable pointer to the license terms (a raw <link> needs the base path by hand). */}
         <link rel="license" href={withBase("/legal/terms/")} />
         <SmoothScrollProvider>

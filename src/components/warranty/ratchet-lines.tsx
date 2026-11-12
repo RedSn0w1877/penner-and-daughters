@@ -4,8 +4,10 @@
 
 /**
  * The warranty's four promises in big type, set with RATCHET as each line comes into view: every
- * word advances in two 6px clicks (steps(2), 90 ms a word), and the last word widens from Archivo
- * wdth 64 to 70 as it lands, like a ratchet seating.
+ * word advances in two 6px clicks (steps(2), 90 ms a word), and the last word widens as it lands,
+ * like a ratchet seating: from 92% of its width (about what Archivo wdth 64 is to the word's 70)
+ * to full, as a scale from its left edge. A transform, not the font's width axis: animating wdth
+ * changed the word's real width, so a long line re-wrapped mid-seat and shifted the whole column.
  *
  * The animation is CSS; the only script is an IntersectionObserver that arms each line and marks it
  * seen. The words are hidden only once armed (JS running, html.js) and with motion allowed, so
@@ -27,8 +29,9 @@ const STYLES = `
 @layer components {
   @keyframes ratchet-click { from { translate: -12px 0; } to { translate: 0 0; } }
   @keyframes ratchet-show { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes ratchet-seat { from { font-variation-settings: "wdth" 64; } to { font-variation-settings: "wdth" 70; } }
+  @keyframes ratchet-seat { from { scale: 0.92 1; } to { scale: 1 1; } }
   .ratchet-word { display: inline-block; }
+  .ratchet-word[data-last] { transform-origin: 0 50%; }
   @media (prefers-reduced-motion: no-preference) {
     html.js .ratchet-line[data-armed]:not([data-seen]) .ratchet-word { opacity: 0; }
   }

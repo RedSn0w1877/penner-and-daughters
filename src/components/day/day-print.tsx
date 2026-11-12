@@ -18,7 +18,7 @@ import { FilmClip } from "@/components/ui/film-clip";
 import { Print } from "@/components/ui/print";
 import { Stamp } from "@/components/ui/stamp";
 import { DAY_STEPS, MEDIA_LABEL, NIGHT, printFor, type DayPrintMedia } from "@/data/day";
-import { CLIPS, PHOTOS, clipLabel, type ClipId, type Photo } from "@/data/media";
+import { CLIPS, PHOTOS, clipLabel, posterSrcSet, type ClipId, type Photo } from "@/data/media";
 import { cx } from "@/lib/cx";
 
 function PhotoPicture({ photo, sizes, className }: { photo: Photo; sizes: string; className?: string }) {
@@ -65,7 +65,7 @@ export function StepPrint({ stepIndex, tilt = 0, className }: { stepIndex: numbe
   return (
     <Print tilt={tilt} caption={stepCaption(stepIndex)} className={className}>
       {media.kind === "clip" ? (
-        <FilmClip id={media.clip} variant="print" playOnce={media.once} />
+        <FilmClip id={media.clip} variant="print" playOnce={media.once} sizes="(min-width: 1024px) 420px, 92vw" />
       ) : (
         <div className="relative aspect-video">
           <PhotoPicture photo={PHOTOS[media.photo]} sizes="(min-width: 1024px) 420px, 92vw" />
@@ -127,8 +127,19 @@ export function DayPrint({
     <Print tilt={1.4} caption={caption} className={className} style={style}>
       <div ref={frameRef} className="relative aspect-video" data-print-frame="">
         <picture className={layer(showing === "bay")}>
-          <source type="image/avif" srcSet={bay.avif} />
-          <img src={bay.webp} alt="" width={bay.width} height={bay.height} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+          {/* The print is ~340-420 px wide: the 480 w copy at 1x, the full size at 2x. */}
+          <source type="image/avif" srcSet={posterSrcSet(bay, "avif")} sizes="420px" />
+          <img
+            src={bay.webp}
+            srcSet={posterSrcSet(bay, "webp")}
+            sizes="420px"
+            alt=""
+            width={bay.width}
+            height={bay.height}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         </picture>
 
         <div className={layer(showing === "parts")}>
@@ -146,6 +157,7 @@ export function DayPrint({
                 controls={false}
                 active={playing && current && !(l.once && ended === l.step)}
                 onEnded={l.once ? () => onEnded?.(l.step) : undefined}
+                sizes="420px"
                 className="aspect-auto h-full w-full"
               />
             </div>
