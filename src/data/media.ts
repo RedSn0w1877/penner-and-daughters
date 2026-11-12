@@ -2,14 +2,17 @@
 
 /**
  * Every media file the site loads (spec §15), already run through withBase() so the URLs work
- * under the /penner-and-daughters base path. The assets stream ships exactly these names; the
- * "-v1" suffix versions them, because GitHub Pages caches for 10 minutes.
+ * under the /penner-and-daughters base path. The suffix versions them, because GitHub Pages caches
+ * for 10 minutes: "-v2" is every photo and clip that replaced a Blender render (and the pad
+ * cutout cut from the new pads photo), so returning visitors never get the old renders; "-v1" is
+ * what is still a render (props, line art, frames, models).
  *
  * Every still and clip of the shop is AI-generated (Google Flow: stills, and clips made with Omni
  * 1.1 Flash) and carries a burned-in "HVNF Studios · portfolio sample" mark. One clip, the torque
  * wrench, is stock footage from Pexels ("Mechanic turning wheel studs of car tire" by K, Pexels
- * Licence); it is not HVNF's footage, so it carries no HVNF mark. The parts diagrams, frame
- * sequences, GLB models and the small props are still 3D renders (Blender). Every caption and alt
+ * Licence, cut from the 4K file); it is not HVNF's footage, so it carries no HVNF mark. The parts
+ * diagrams, frame sequences, GLB models and the small props (key tag, binder clip) are still 3D
+ * renders (Blender). Every caption and alt
  * text says which of these a piece is, using MEDIA_LABEL below.
  */
 import { withBase } from "@/lib/base-path";
@@ -84,13 +87,12 @@ function rendition(
   name: string,
   width: number,
   height: number,
-  opts: { vp9?: boolean; vp9First?: boolean; hd?: boolean; poster?: { name: string; width: number; height: number } } = {},
+  opts: { vp9?: boolean; hd?: boolean; poster?: { name: string; width: number; height: number } } = {},
 ): ClipRendition {
-  // Browsers take the first source they can play, so the smallest encode goes first. That's AV1
-  // everywhere except where the VP9 file came out smaller (vp9First).
+  // Browsers take the first source they can play, so the smallest encode goes first: AV1.
   const av1: VideoSource = { src: m(`${name}.av1.mp4`), type: opts.hd ? AV1_HD : AV1_SD };
-  const vp9: VideoSource | null = opts.vp9 || opts.vp9First ? { src: m(`${name}.vp9.webm`), type: VP9 } : null;
-  const sources: VideoSource[] = opts.vp9First && vp9 ? [vp9, av1] : vp9 ? [av1, vp9] : [av1];
+  const vp9: VideoSource | null = opts.vp9 ? { src: m(`${name}.vp9.webm`), type: VP9 } : null;
+  const sources: VideoSource[] = vp9 ? [av1, vp9] : [av1];
   sources.push({ src: m(`${name}.h264.mp4`), type: H264 });
   const p = opts.poster ?? { name, width, height };
   return {
@@ -113,8 +115,8 @@ export const CLIPS: Record<ClipId, Clip> = {
     touchPlays: true,
     alt: "AI-generated video: a silver sedan up on the lift in a repair bay, seen through the open roll-up door on a wet morning.",
     variants: {
-      print: rendition("hero-4x5-v1", 864, 1080, { vp9First: true, hd: true }),
-      band: rendition("hero-16x9-v1", 1280, 720, { poster: { name: "hero-16x9-v1", width: 828, height: 466 } }),
+      print: rendition("hero-4x5-v2", 864, 1080, { vp9: true, hd: true }),
+      band: rendition("hero-16x9-v2", 1280, 720, { poster: { name: "hero-16x9-v2", width: 828, height: 466 } }),
     },
   },
   "night-drop": {
@@ -125,8 +127,8 @@ export const CLIPS: Record<ClipId, Clip> = {
     touchPlays: true,
     alt: "AI-generated video: the shop's side door at night in the rain, with the blue office door, the steel key slot and the porch light.",
     variants: {
-      fullbleed: rendition("night-drop-v1", 1600, 900, { vp9: true, hd: true }),
-      band: rendition("night-drop-720-v1", 1280, 720, { poster: { name: "night-drop-828-v1", width: 828, height: 466 } }),
+      fullbleed: rendition("night-drop-v2", 1600, 900, { vp9: true, hd: true }),
+      band: rendition("night-drop-720-v2", 1280, 720, { poster: { name: "night-drop-828-v2", width: 828, height: 466 } }),
     },
   },
   "door-rise": {
@@ -137,8 +139,8 @@ export const CLIPS: Record<ClipId, Clip> = {
     touchPlays: true,
     alt: "AI-generated video: at dawn the white roll-up door rises on the bay, with the silver sedan waiting on the lift.",
     variants: {
-      fullbleed: rendition("door-rise-v1", 1600, 900, { vp9: true, hd: true }),
-      band: rendition("door-rise-720-v1", 1280, 720, { poster: { name: "door-rise-828-v1", width: 828, height: 466 } }),
+      fullbleed: rendition("door-rise-v2", 1600, 900, { vp9: true, hd: true }),
+      band: rendition("door-rise-720-v2", 1280, 720, { poster: { name: "door-rise-828-v2", width: 828, height: 466 } }),
     },
   },
   "lift-rise": {
@@ -148,7 +150,7 @@ export const CLIPS: Record<ClipId, Clip> = {
     source: "ai",
     touchPlays: false,
     alt: "AI-generated video: the two-post lift raises the silver sedan off the floor.",
-    variants: { print: print540("lift-rise-v1") },
+    variants: { print: print540("lift-rise-v2") },
   },
   "pad-gauge": {
     id: "pad-gauge",
@@ -157,7 +159,7 @@ export const CLIPS: Record<ClipId, Clip> = {
     source: "ai",
     touchPlays: true,
     alt: "AI-generated video: a gloved hand slides a brake-pad gauge along the edge of a brake pad.",
-    variants: { print: print540("pad-gauge-v1") },
+    variants: { print: print540("pad-gauge-v2") },
   },
   torque: {
     id: "torque",
@@ -166,7 +168,7 @@ export const CLIPS: Record<ClipId, Clip> = {
     source: "stock",
     touchPlays: false,
     alt: "Stock footage from Pexels: a hand sets a torque wrench on a wheel's lug nut, then moves it to the next nut.",
-    variants: { print: print540("torque-v1") },
+    variants: { print: print540("torque-v2") },
   },
   "road-test": {
     id: "road-test",
@@ -175,7 +177,7 @@ export const CLIPS: Record<ClipId, Clip> = {
     source: "ai",
     touchPlays: false,
     alt: "AI-generated video: tracking alongside the sedan's front wheel on a quiet street, with leaf shadows sliding over the car.",
-    variants: { print: print540("road-test-v1") },
+    variants: { print: print540("road-test-v2") },
   },
   "pickup-box": {
     id: "pickup-box",
@@ -184,7 +186,7 @@ export const CLIPS: Record<ClipId, Clip> = {
     source: "ai",
     touchPlays: false,
     alt: "AI-generated video: a steel pickup locker door swings shut and latches on the brick wall.",
-    variants: { print: print540("pickup-box-v1") },
+    variants: { print: print540("pickup-box-v2") },
   },
 };
 
@@ -216,11 +218,11 @@ const img = (file: string) => withBase(`/img/photos/${file}`);
 function photo(id: PhotoId, alt: string): Photo {
   return {
     id,
-    avif: img(`${id}-v1.avif`),
-    webp: img(`${id}-v1.webp`),
+    avif: img(`${id}-v2.avif`),
+    webp: img(`${id}-v2.webp`),
     width: 960,
     height: 720,
-    small: { avif: img(`${id}-v1-480.avif`), webp: img(`${id}-v1-480.webp`), width: 480, height: 360 },
+    small: { avif: img(`${id}-v2-480.avif`), webp: img(`${id}-v2-480.webp`), width: 480, height: 360 },
     alt,
   };
 }
@@ -236,13 +238,13 @@ export const PHOTOS: Record<PhotoId, Photo> = {
 };
 
 export const STOREFRONT = {
-  wide: { avif: img("storefront-16x9-v1.avif"), webp: img("storefront-16x9-v1.webp"), width: 1280, height: 720 },
-  tall: { avif: img("storefront-4x5-v1.avif"), webp: img("storefront-4x5-v1.webp"), width: 864, height: 1080 },
+  wide: { avif: img("storefront-16x9-v2.avif"), webp: img("storefront-16x9-v2.webp"), width: 1280, height: 720 },
+  tall: { avif: img("storefront-4x5-v2.avif"), webp: img("storefront-4x5-v2.webp"), width: 864, height: 1080 },
   alt: "AI-generated image of the shop from Cooper Mill Road: red brick, two white roll-up doors and the blue office door.",
 } as const;
 
-/** The worn pad cut out on a transparent background (the inspection lift-out). */
-export const PAD_CUTOUT = { webp: img("pad-cutout-v1.webp"), width: 600 } as const;
+/** The worn pad cut out of the pads photo (P1) on a transparent background, feathered edge: the inspection lift-out. */
+export const PAD_CUTOUT = { webp: img("pad-cutout-v2.webp"), width: 600 } as const;
 
 /* =============================================================================================
  * Props and line art

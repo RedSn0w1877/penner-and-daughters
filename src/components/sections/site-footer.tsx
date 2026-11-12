@@ -7,11 +7,13 @@ import { COPY, HOURS_TEXT, SHOP, WARRANTY } from "@/lib/facts";
 
 /**
  * Footer on the deeper counter: name, address, numbers, hours, the warranty line, links
- * (Terms and Privacy on every page), the fiction disclosure and the © line. Graphite on
- * counter-deep only (the lighter imprint grey fails contrast here).
+ * (Terms and Privacy on every page), the fiction disclosure and the © line. Deep graphite on
+ * counter-deep (graphite and the lighter imprint grey both fall short of 4.5:1 here).
  */
 export function SiteFooter() {
-  const linkCls = "font-semibold text-ink underline decoration-[1.5px] underline-offset-[3px] hover:text-blue";
+  // 44px tall tap targets on touch screens (the list drops its gap there); a tight list with a pointer.
+  const linkCls =
+    "inline-flex items-center font-semibold text-ink underline decoration-[1.5px] underline-offset-[3px] hover:text-blue max-lg:min-h-11";
   return (
     <footer className="site-footer mt-0">
       <div className="counter-wrap grid gap-10 py-14 lg:grid-cols-12 lg:py-20">
@@ -38,7 +40,7 @@ export function SiteFooter() {
         </div>
 
         <nav id="site-footer-nav" aria-label="Footer" className="scroll-mt-[var(--header-h)] lg:col-span-3">
-          <ul className="flex flex-col gap-2.5">
+          <ul className="flex flex-col lg:gap-2.5">
             <li>
               <a href={withBase("/#prices")} className={linkCls}>
                 {LABELS.services}

@@ -37,6 +37,7 @@ export function Print({
           alt=""
           width={PROPS.binderClip.width}
           height={PROPS.binderClip.height}
+          loading="lazy"
           decoding="async"
         />
       )}

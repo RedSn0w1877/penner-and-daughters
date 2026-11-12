@@ -12,9 +12,11 @@
  * One color rule: red, amber and green describe the car; ballpoint blue is you.
  */
 @theme static {
-  /* Surfaces */
-  --color-counter: #e4e7ea;
-  --color-counter-deep: #d5d9dd;
+  /* Surfaces. The counter is a workshop mid-grey, so the white paperwork sits on a bench
+     (paper/counter 1.5:1; graphite 5.0 flat and 4.6 on the grain's darkest line, ink 11.5,
+     blue 5.5, ok 3.4 on it). */
+  --color-counter: #c9cdd1;
+  --color-counter-deep: #b9bec3;
   --color-paper: #fcfbf7;
   --color-paper-shade: #f3f1ea;
   --color-canary: #fbf1b8;
@@ -25,6 +27,8 @@
   --color-graphite: #4b525a;
   /* Fine print ONLY on paper or canary (imprint on the counter fails contrast). */
   --color-imprint: #646b73;
+  /* Secondary text on the deeper counter (the footer): 6.0:1 there, where graphite falls short. */
+  --color-graphite-deep: #353b41;
   --color-rule: #cdd1d6;
   --color-steel: #7c858f;
 
@@ -65,6 +69,8 @@
   --ease-slip: cubic-bezier(0.2, 0.7, 0.1, 1);
   --ease-roll: cubic-bezier(0.3, 1.25, 0.5, 1);
   --ease-ink: cubic-bezier(0.25, 0.8, 0.3, 1);
+  /* UI press and release: a strong ease-out, so the response starts at once. */
+  --ease-press: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @theme inline {
@@ -457,7 +463,7 @@
  * =========================================================================================== */
 
 @layer components {
-  /* ---- Paper: sheets, carbon copies, the perforated foot, the pantograph ------------------- */
+  /* ---- Paper: sheets, carbon copies, the perforated foot ----------------------------------- */
 
   .sheet {
     position: relative;
@@ -557,26 +563,6 @@
     pointer-events: none;
   }
 
-  /*
-   * Pantograph: "SAMPLE · HVNF STUDIOS" at 3% ink, -18°, like the void pattern on a check.
-   * The tile is upright; the oversized layer rotates, so there are no seams.
-   */
-  .pantograph {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .pantograph::before {
-    content: "";
-    position: absolute;
-    inset: -60%;
-    transform: rotate(-18deg);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='92'%3E%3Cg fill='%23121417' fill-opacity='0.03' font-family='Arial,Helvetica,sans-serif' font-size='12' font-weight='700'%3E%3Ctext x='6' y='30'%3ESAMPLE %C2%B7 HVNF STUDIOS%3C/text%3E%3Ctext x='156' y='76'%3ESAMPLE %C2%B7 HVNF STUDIOS%3C/text%3E%3C/g%3E%3C/svg%3E");
-    background-size: 300px 92px;
-  }
-
   /* ---- SLIP: --slip runs 1 → 0 (24px lower, −0.6°, shadow y 28px → 6px) ------------------- */
 
   .sheet[data-slip-state] {
@@ -658,18 +644,28 @@
     text-decoration: none;
     white-space: nowrap;
     transition:
-      transform 180ms var(--ease-slip),
+      transform 160ms var(--ease-press),
       box-shadow 180ms var(--ease-slip),
       background-color 180ms;
   }
 
-  .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lift);
+  /* Hover lifts 1px (never a zoom), only where a pointer can really hover: a tap would leave it stuck. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lift);
+    }
   }
 
-  .btn:active {
-    transform: translateY(0);
+  /* Press: a quick 3% squeeze, so every button answers the finger or the click at once. */
+  .btn:active,
+  .press:active {
+    transform: scale(0.97);
+    transition-duration: 90ms;
+  }
+
+  .press {
+    transition: transform 160ms var(--ease-press);
   }
 
   .btn[data-size="md"] {
@@ -853,6 +849,11 @@
 
   .ptabs::-webkit-scrollbar {
     display: none;
+  }
+
+  /* The strip scrolls sideways, so it clips anything drawn outside a tab: the ring goes inside. */
+  .ptab:focus-visible {
+    outline-offset: -4px;
   }
 
   .ptab {
@@ -1237,7 +1238,7 @@
 
   .site-footer {
     background: var(--counter-deep);
-    color: var(--graphite);
+    color: var(--color-graphite-deep);
   }
 
   /* sonner, restyled as paper slips (no blur, no glass). */

@@ -240,7 +240,7 @@ export const COPY = {
   printImprint: `Portfolio sample by ${STUDIO} · fictional business`,
   fictionLine: `${SHORT} is a fictional shop.`,
   /** Footer disclosure: says what each kind of media is (data/media.ts MEDIA_LABEL uses the same words). */
-  footerFiction: `${SHORT} is a fictional business. The address and phone numbers are made up for an ${STUDIO} portfolio sample. The photos and clips of the shop are AI-generated for the sample, one clip (a wrench on a wheel) is stock footage from Pexels, and the parts diagrams are 3D renders. None of it shows a real ${SHORT}, because there isn't one.`,
+  footerFiction: `${SHORT} is a fictional business. The address and phone numbers are made up for an ${STUDIO} portfolio sample. The photos and clips of the shop are AI-generated for the sample, one clip (a wrench on a wheel) is stock footage from Pexels, and the parts diagrams, the blue key tag and the binder clips are 3D renders. There is no real ${SHORT} to show.`,
   copyright: COPYRIGHT_NOTICE,
 } as const;
 

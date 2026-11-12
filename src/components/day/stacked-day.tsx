@@ -41,6 +41,7 @@ function StackedDay() {
             </figure>
             <div className="lg:col-span-5 lg:row-start-1">
               <ClockFace minutes={NIGHT.dropAt} className="text-[clamp(64px,23vw,96px)] lg:text-[clamp(96px,9vw,136px)]" />
+              <p className="mono-imprint mt-2 text-night-dim">{NIGHT.clockCaption}</p>
               <p className="mt-6 text-[clamp(28px,7vw,40px)] font-[780] leading-[1.05] [--wdth:78]">{NIGHT.dropLine}</p>
               <p className="mt-3 max-w-[42ch] text-[17px] leading-[1.5] text-night-dim">{NIGHT.dropNote}</p>
               <p className="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-t border-dashed border-night-dim/40 pt-5">
@@ -63,8 +64,9 @@ function StackedDay() {
         </div>
       </div>
 
-      {/* Dawn: night to the counter, carrying the morning's first line. */}
-      <div className="h-[60vh] min-h-[320px] bg-[linear-gradient(180deg,var(--night)_0%,var(--dawn)_42%,var(--counter)_100%)]">
+      {/* Dawn: night to the counter, carrying the morning's first line. Short on phones, so it reads
+          as a turn of the page, never as an empty screen. */}
+      <div className="h-[34vh] min-h-[240px] lg:h-[50vh] lg:min-h-[320px] bg-[linear-gradient(180deg,var(--night)_0%,var(--dawn)_42%,var(--counter)_100%)]">
         <p className="counter-wrap pt-[7vh] text-center text-[clamp(26px,4.2vw,52px)] font-[800] leading-[1.04] text-night-ink [--wdth:70]">
           {NIGHT.doorLine}
         </p>

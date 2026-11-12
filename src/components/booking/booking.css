@@ -224,9 +224,16 @@
       box-shadow 180ms var(--ease-slip);
   }
 
-  .bk-chip:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lift);
+  @media (hover: hover) and (pointer: fine) {
+    .bk-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  .bk-chip:active {
+    transform: scale(0.97);
+    transition-duration: 90ms;
   }
 
   /* Carried in from the symptom guide or your estimate. */

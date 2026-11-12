@@ -75,7 +75,9 @@ export function SiteHeader() {
 
           <div className="ml-auto flex items-center gap-2 min-[400px]:gap-3 lg:gap-5">
             <OpenStatus variant="chip" className="hidden 2xl:inline-flex" />
-            <PhoneLink className="-my-3 inline-flex min-h-11 items-center text-[13px] text-ink min-[400px]:text-[14px] sm:text-[15px] lg:hidden xl:inline-flex" />
+            {/* Under 360px the number can't fit beside the wordmark and Menu (the page would scroll
+                sideways); the tear-off bar's Call carries it there. */}
+            <PhoneLink className="-my-3 inline-flex min-h-11 items-center text-[13px] text-ink max-[359px]:hidden min-[400px]:text-[14px] sm:text-[15px] lg:hidden xl:inline-flex" />
             <BookButton withTotal size="sm" className="hidden lg:inline-flex" />
             <MenuSheet />
           </div>

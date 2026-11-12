@@ -59,6 +59,9 @@ export const NIGHT = {
   doorLine: `${formatClock(tuesday.open, "hm")}. Bay door up. Your car is first in.`,
 
   developCaption: "Same bay you saw up top. Now it's your car's turn.",
+
+  /** Under the drum clock, so nobody reads it as the real time. */
+  clockCaption: "The time, through one example day",
 } as const;
 
 /* =============================================================================================
@@ -110,7 +113,7 @@ const at = (hhmm: string) => ({ time: formatClock(hhmm), minutes: DAY + toMinute
 
 export const DAY_SHEET = {
   title: "Day sheet · Tue",
-  car: `RO ${car.ro} · ${car.description}`,
+  car: `Repair order ${car.ro} · ${car.description}`,
   /** The CSS phone's thread header. */
   thread: `${SHOP.advisor.first} · ${SHOP.shortName}`,
   threadMeta: "Text message · Today",
@@ -244,8 +247,8 @@ export const TRACKER_COPY = {
   title: "Track my car",
   roLabel: "Repair order number",
   show: "Show status",
-  car: `RO ${car.ro} · ${car.description}`,
-  advisor: `Advisor: ${SHOP.advisor.name}`,
+  car: `Repair order ${car.ro} · ${car.description}`,
+  advisor: `${SHOP.advisor.role}: ${SHOP.advisor.name}`,
   now: "Now",
   run: "Run the demo day",
   pause: "Pause",

@@ -59,7 +59,7 @@ const FULLBLEED = "absolute inset-0 aspect-auto h-full w-full [&>picture>img]:ob
 const RGB = {
   night: [13, 16, 19],
   dawn: [44, 58, 74],
-  counter: [228, 231, 234],
+  counter: [201, 205, 209],
 } as const;
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -120,6 +120,7 @@ export function DayChapter() {
   const labelRef = useRef<HTMLParagraphElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const clockRef = useRef<HTMLDivElement>(null);
+  const clockCaptionRef = useRef<HTMLParagraphElement>(null);
   const dayRef = useRef<HTMLDivElement>(null);
   const dockRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -212,6 +213,7 @@ export function DayChapter() {
         // The clock docks in the second half, once the print is nearly in its slot (not across the film).
         const dc = ease(clamp01((d - 0.45) / 0.55));
         clock.style.transform = `translate(${((g.docked.x - g.home.x) * dc).toFixed(2)}px, ${((g.docked.y - g.home.y) * dc).toFixed(2)}px) scale(${lerp(1, g.dockScale, dc).toFixed(4)})`;
+        if (clockCaptionRef.current) clockCaptionRef.current.style.opacity = (1 - clamp01(d / 0.45)).toFixed(3);
         const fade = (1 - clamp01(d / 0.5)).toFixed(3);
         scrim.style.opacity = fade;
         label.style.opacity = fade;
@@ -418,6 +420,9 @@ export function DayChapter() {
           aria-hidden="true"
         >
           <ClockFace minutes={NIGHT.dropAt} className="text-[min(190px,19vh)]" />
+          <p ref={clockCaptionRef} className="absolute left-0 top-full mt-2 whitespace-nowrap font-mono text-[12.5px] text-night-dim">
+            {NIGHT.clockCaption}
+          </p>
         </div>
 
         <div className="absolute right-[max(40px,calc((100%_-_1400px)/2))] top-[calc(var(--header-h)_+_14px)] z-[6] flex items-center gap-2">

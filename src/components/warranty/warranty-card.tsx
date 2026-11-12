@@ -3,7 +3,7 @@
 // © 2026 HVNF Studios. All rights reserved. Portfolio sample — do not redistribute.
 
 /**
- * The warranty card: card stock with a bevelled edge, a printed double rule and the pantograph.
+ * The warranty card: card stock with a bevelled edge, and a printed double rule.
  *
  *   full tier   tilts up to ±6° toward the pointer and flips over (CSS rotateY, 600 ms) on a click,
  *               a tap or Enter on its button
@@ -57,7 +57,6 @@ function CardStock({ children, className }: { children: ReactNode; className?: s
         className,
       )}
     >
-      <span className="pantograph" aria-hidden="true" />
       <div className="relative">{children}</div>
     </div>
   );

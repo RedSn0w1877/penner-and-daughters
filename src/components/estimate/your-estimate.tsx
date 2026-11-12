@@ -99,7 +99,6 @@ function EstimateSheet({
   return (
     <Sheet
       tone={carbon ? "canary" : "paper"}
-      pantograph={!carbon}
       imprint={IMPRINTS.estimate}
       slip={false}
       className="est-sheet"

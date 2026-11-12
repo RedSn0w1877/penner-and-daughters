@@ -244,7 +244,10 @@ export function CustomerStates({ className }: { className?: string }) {
         {/* Label above the line at every width, so the longest phrase fits one line from 640px up
             (two lines are reserved below that): typing never changes the sheet's height. */}
         <span className="type-label flex items-baseline justify-between gap-3">
-          <span>Customer states</span>
+          {/* The typed words are examples of what drivers tell us, never one real customer's. */}
+          <span>
+            Customer states <span className="text-graphite">· example</span>
+          </span>
           <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-graphite transition-colors group-hover:text-blue">
             Look up
             <ArrowDown />

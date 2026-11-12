@@ -203,11 +203,16 @@ export function PhoneThread({
     variant === "phone" ? <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden">{ol}</div> : ol;
 
   if (variant === "stack") {
+    // Phones, tablets and the lite tier show the thread as a plain stack, so say plainly that it's
+    // an example of the texts a customer gets (the desktop CSS phone sits under the section's lead).
     return (
-      <section aria-label={THREAD.from} className={cx("overflow-hidden rounded-[20px] border border-rule bg-paper shadow-paper", className)}>
-        {header}
-        {list}
-      </section>
+      <div className={className}>
+        <p className="type-label mb-2 text-center">{THREAD.example}</p>
+        <section aria-label={THREAD.from} className="overflow-hidden rounded-[20px] border border-rule bg-paper shadow-paper">
+          {header}
+          {list}
+        </section>
+      </div>
     );
   }
 

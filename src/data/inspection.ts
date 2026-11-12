@@ -22,9 +22,10 @@ export const INSPECTION_COPY = {
   lead: "An example of the inspection we text you. Every item gets a photo, a measurement and a price. You approve each line, or tell us “not today.”",
   /** Mono, top right of the section. */
   meta: [
-    `RO ${SHOP.exampleCar.ro} · Tue 8:15 AM`,
+    `Repair order ${SHOP.exampleCar.ro} · Tue 8:15 AM`,
     `${SHOP.exampleCar.description} · ${SHOP.exampleCar.miles}`,
-    `Advisor: ${SHOP.advisor.name}`,
+    `Inspected by ${SHOP.tech.name}, ${SHOP.tech.role.toLowerCase()}`,
+    `Texts from ${SHOP.advisor.name}, ${SHOP.advisor.role.toLowerCase()}`,
   ],
   walkCaption: `Where ${SHOP.tech.first} found things`,
   /** The pencil note a "Not today" leaves on the line. */
@@ -61,6 +62,8 @@ const p = (n: number) => money(n);
 export const THREAD = {
   from: `${SHOP.advisor.first} · ${SHOP.shortName}`,
   header: "Text message · Today",
+  /** Above the thread wherever it's a plain stack (phones, tablets, lite). */
+  example: "Example: what your text will look like",
   messages: [
     {
       id: "hello",

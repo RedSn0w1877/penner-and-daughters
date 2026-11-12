@@ -564,9 +564,16 @@
       color 160ms;
   }
 
-  .rs-add:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lift);
+  @media (hover: hover) and (pointer: fine) {
+    .rs-add:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  .rs-add:active {
+    transform: scale(0.97);
+    transition-duration: 90ms;
   }
 
   .rs-add[aria-pressed="true"] {

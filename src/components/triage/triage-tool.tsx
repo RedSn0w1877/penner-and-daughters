@@ -180,7 +180,7 @@ export function TriageTool({ guide, staticTabs }: { guide: ReactNode; staticTabs
         aria-labelledby={`${ID_PREFIX}-tab-${id}`}
         tabIndex={0}
         hidden={shown !== id}
-        className="outline-none"
+        className="rounded-[2px] focus-visible:outline-offset-4"
       >
         {node}
       </div>

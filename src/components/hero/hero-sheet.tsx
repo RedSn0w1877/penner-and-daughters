@@ -6,10 +6,20 @@ import { OpenStatus } from "@/components/chrome/open-status";
 import { BookButton, CallButton, TextLink } from "@/components/ui/buttons";
 import { Sheet } from "@/components/ui/sheet";
 import { IMPRINTS, LABELS } from "@/data/copy";
+import { SERVICE_BY_ID, priceText } from "@/data/services";
 import { cx } from "@/lib/cx";
 import { SHOP } from "@/lib/facts";
+import { DIAG, money } from "@/lib/pricing";
 import { CustomerStates } from "./customer-states";
 import { PromiseList } from "./promise-list";
+import { QuickPicks, type QuickPick } from "./quick-picks";
+
+/** Brakes first (what most drivers come for), then what the check-engine check costs. */
+const PICKS: readonly QuickPick[] = [
+  { label: "Brakes squeal or grind", price: priceText(SERVICE_BY_ID["brake-pads"]), id: "squeal-braking" },
+  { label: "Check-engine light", price: `${money(DIAG, { range: true })} check`, id: "cel-steady" },
+  { label: "Another noise, light or leak" },
+];
 
 /**
  * Repair order 4471: the hero, and the three-second test. Everything a driver needs is server
@@ -26,7 +36,6 @@ export function HeroSheet({ className }: { className?: string }) {
       <Sheet
         imprint={IMPRINTS.hero}
         carbon
-        pantograph
         slip={false}
         bodyClassName="lg:px-12 lg:pt-10 lg:pb-11"
         // A narrow phone can't fit "Halden Crossing." at 58px with the fallback font; clip, never scroll.
@@ -52,16 +61,20 @@ export function HeroSheet({ className }: { className?: string }) {
           <span className="block whitespace-nowrap">{SHOP.town}.</span>
         </h1>
 
-        <p className="type-lead mt-5 max-w-[33em] text-graphite lg:mt-6">
+        <p className="type-lead mt-4 max-w-[33em] text-graphite lg:mt-6">
           We text you photos of what we find and a written price for every line.{" "}
           <strong className="font-semibold text-ink">Nothing gets fixed until you say yes.</strong>
         </p>
 
-        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:mt-7 lg:flex lg:flex-wrap lg:items-center lg:gap-4">
-          <CallButton size="lg" className="w-full lg:w-auto" />
+        {/* Phones: Call across, then Book with "or text us" beside it, so the text link never sits
+            under the tear-off bar; then the quick picks. */}
+        <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-3 sm:grid-cols-2 lg:mt-7 lg:flex lg:flex-wrap lg:items-center lg:gap-4">
+          <CallButton size="lg" className="col-span-2 w-full sm:col-span-1 lg:w-auto" />
           <BookButton size="lg" className="w-full lg:w-auto" />
-          <TextLink className="justify-self-start py-2.5 text-[17px] sm:col-span-2 lg:ml-1 lg:py-0">{LABELS.orTextUs}</TextLink>
+          <TextLink className="self-center justify-self-start py-2.5 text-[17px] sm:col-span-2 lg:ml-1 lg:py-0">{LABELS.orTextUs}</TextLink>
         </div>
+
+        <QuickPicks picks={PICKS} className="mt-4 lg:hidden" />
 
         <div className="mt-5 lg:mt-6">
           <NextOpening className="text-ink" />

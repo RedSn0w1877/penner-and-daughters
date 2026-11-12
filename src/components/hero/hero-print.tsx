@@ -74,13 +74,15 @@ export function HeroPrint({ className }: { className?: string }) {
         tilt={0}
         className={cx("-rotate-[0.8deg] max-lg:pb-9 lg:rotate-[1.4deg]")}
       >
-        {/* Pause / Play sits bottom-left: the burned-in "HVNF Studios · portfolio sample" mark owns the bottom-right. */}
+        {/* Pause / Play sits bottom-left: the burned-in "HVNF Studios · portfolio sample" mark owns the bottom-right.
+            Under 1024px the band is a shorter 12:5 crop anchored to the bottom (the mark and the car stay whole,
+            only brick above the door goes), so the buttons and the quick picks reach the first screen. */}
         <FilmClip
           id="hero"
           variant="print"
           phoneVariant="band"
           priority
-          className="[&_.film-toggle]:right-auto [&_.film-toggle]:left-[10px]"
+          className="max-lg:aspect-[12/5] max-lg:[&>picture>img]:object-bottom max-lg:[&>video]:object-bottom [&_.film-toggle]:right-auto [&_.film-toggle]:left-[10px]"
         />
       </Print>
     </div>

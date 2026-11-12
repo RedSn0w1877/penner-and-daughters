@@ -132,7 +132,7 @@ function EmptyEstimate({ copy }: { copy: EstimateCopy }) {
         </Sheet>
       }
       top={
-        <Sheet imprint={IMPRINTS.estimate} pantograph slip={false} className="est-sheet" bodyClassName="est-body">
+        <Sheet imprint={IMPRINTS.estimate} slip={false} className="est-sheet" bodyClassName="est-body">
           <header className="est-head">
             <h3 className="est-title">{copy.title}</h3>
             <p className="est-draft">{copy.draft}</p>

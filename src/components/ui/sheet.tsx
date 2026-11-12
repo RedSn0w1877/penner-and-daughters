@@ -9,8 +9,6 @@ type SheetProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   tone?: "paper" | "canary";
   /** Carbon copies peeking out underneath: true = pink + canary (the repair order), or just one. */
   carbon?: boolean | "pink" | "canary";
-  /** The 3% "SAMPLE · HVNF STUDIOS" security pattern (hero repair order, estimate, warranty card). */
-  pantograph?: boolean;
   /** Left side of the perforated foot: the document's name, e.g. "Repair order 4471". */
   imprint: string;
   /**
@@ -32,7 +30,6 @@ type SheetProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
 export function Sheet({
   tone = "paper",
   carbon,
-  pantograph,
   imprint,
   slip = true,
   as: Tag = "div",
@@ -54,7 +51,6 @@ export function Sheet({
         <span key={copy} className="sheet-carbon" data-copy={copy} aria-hidden="true" />
       ))}
       <div className="sheet-paper">
-        {pantograph && <span className="pantograph" aria-hidden="true" />}
         <div className={cx("sheet-body", bodyClassName)}>{children}</div>
         <div className="sheet-foot">
           <span>{imprint}</span>
